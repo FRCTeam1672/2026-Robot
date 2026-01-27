@@ -7,18 +7,27 @@
     "mavenUrls": [
         "https://maven.revrobotics.com/"
     ],
+<<<<<<< HEAD
     "jsonUrl": "https://software-metadata.revrobotics.com/REVLib-2026.json",
+=======
+    "jsonUrl": "https://software-metadata.revrobotics.com/REVLib-2025.json",
+>>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
     "javaDependencies": [
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-java",
+<<<<<<< HEAD
             "version": "2026.0.1"
+=======
+            "version": "2025.0.3"
+>>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
         }
     ],
     "jniDependencies": [
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-driver",
+<<<<<<< HEAD
             "version": "2026.0.1",
             "skipInvalidPlatforms": true,
             "isJar": false,
@@ -50,6 +59,9 @@
             "groupId": "com.revrobotics.frc",
             "artifactId": "RevLibWpiBackendDriver",
             "version": "2026.0.1",
+=======
+            "version": "2025.0.3",
+>>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
             "skipInvalidPlatforms": true,
             "isJar": false,
             "validPlatforms": [
@@ -66,7 +78,11 @@
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-cpp",
+<<<<<<< HEAD
             "version": "2026.0.1",
+=======
+            "version": "2025.0.3",
+>>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
             "libName": "REVLib",
             "headerClassifier": "headers",
             "sharedLibrary": false,
@@ -83,7 +99,11 @@
         {
             "groupId": "com.revrobotics.frc",
             "artifactId": "REVLib-driver",
+<<<<<<< HEAD
             "version": "2026.0.1",
+=======
+            "version": "2025.0.3",
+>>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
             "libName": "REVLibDriver",
             "headerClassifier": "headers",
             "sharedLibrary": false,
@@ -96,6 +116,7 @@
                 "linuxarm32",
                 "osxuniversal"
             ]
+<<<<<<< HEAD
         },
         {
             "groupId": "com.revrobotics.frc",
@@ -128,6 +149,8 @@
                 "linuxarm32",
                 "osxuniversal"
             ]
+=======
+>>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
         }
     ]
 }
