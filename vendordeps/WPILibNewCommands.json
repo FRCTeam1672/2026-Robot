@@ -25,10 +25,7 @@
       "sharedLibrary": true,
       "skipInvalidPlatforms": true,
       "binaryPlatforms": [
-<<<<<<< HEAD
         "linuxsystemcore",
-=======
->>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
         "linuxathena",
         "linuxarm32",
         "linuxarm64",

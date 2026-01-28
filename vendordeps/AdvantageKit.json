@@ -12,22 +12,14 @@
         {
             "groupId": "org.littletonrobotics.akit",
             "artifactId": "akit-java",
-<<<<<<< HEAD
             "version": "26.0.0"
-=======
-            "version": "4.1.2"
->>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
         }
     ],
     "jniDependencies": [
         {
             "groupId": "org.littletonrobotics.akit",
             "artifactId": "akit-wpilibio",
-<<<<<<< HEAD
             "version": "26.0.0",
-=======
-            "version": "4.1.2",
->>>>>>> 4da20f1e36dd5bc1b5de359eb0074c8843eec1ba
             "skipInvalidPlatforms": false,
             "isJar": false,
             "validPlatforms": [
