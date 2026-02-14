@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -40,8 +39,6 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
-  private final Intake intake = new Intake();
-
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing selection of desired auto
   private final SendableChooser<Command> autoChooser;
@@ -50,8 +47,8 @@ public class RobotContainer
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> -driverPS5.getLeftY(),
-                                                                () -> -driverPS5.getLeftX())
+                                                                () -> driverPS5.getLeftY() * -1,
+                                                                () -> driverPS5.getLeftX() * -1)
                                                             .withControllerRotationAxis(driverPS5::getRightX)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
@@ -81,8 +78,7 @@ public class RobotContainer
   // Derive the heading axis with math!
   SwerveInputStream driveDirectAngleKeyboard     = driveAngularVelocityKeyboard.copy()
                                                                                .withControllerHeadingAxis(() ->
-                                                                 
-                                                                               Math.sin(
+                                                                                                              Math.sin(
                                                                                                                   driverPS5.getRawAxis(
                                                                                                                       2) *
                                                                                                                   Math.PI) *
@@ -135,13 +131,70 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
+    Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(
+        driveDirectAngle);
+    Command driveFieldOrientedDirectAngleKeyboard      = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
+    Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
+    Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
+        driveDirectAngleKeyboard);
+
+    if (RobotBase.isSimulation())
+    {
+      drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+    } else
+    {
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    }
+
+    if (Robot.isSimulation())
+    {
+      Pose2d target = new Pose2d(new Translation2d(1, 4),
+                                 Rotation2d.fromDegrees(90));
+      //drivebase.getSwerveDrive().field.getObject("targetPose").setPose(target);
+      driveDirectAngleKeyboard.driveToPose(() -> target,
+                                           new ProfiledPIDController(5,
+                                                                     0,
+                                                                     0,
+                                                                     new Constraints(5, 2)),
+                                           new ProfiledPIDController(5,
+                                                                     0,
+                                                                     0,
+                                                                     new Constraints(Units.degreesToRadians(360),
+                                                                                     Units.degreesToRadians(180))
+                                           ));
+      driverPS5.options().onTrue(Commands.runOnce(() -> drivebase.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+      driverPS5.button(1).whileTrue(drivebase.sysIdDriveMotorCommand());
+      driverPS5.button(2).whileTrue(Commands.runEnd(() -> driveDirectAngleKeyboard.driveToPoseEnabled(true),
+                                                     () -> driveDirectAngleKeyboard.driveToPoseEnabled(false)));
+
+//      driverPS5.b().whileTrue(
+//          drivebase.driveToPose(
+//              new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
+//                              );
+
+    }
+    if (DriverStation.isTest())
+    {
+      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+
+      driverPS5.square().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverPS5.create().whileTrue(drivebase.centerModulesCommand());
+      driverPS5.L1().onTrue(Commands.none());
+      driverPS5.R1().onTrue(Commands.none());
+    } else
+    {
       driverPS5.cross().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverPS5.square().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       driverPS5.options().whileTrue(Commands.none());
       driverPS5.create().whileTrue(Commands.none());
       driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       driverPS5.R1().onTrue(Commands.none());
-      driverPS5.L2().whileTrue(Commands.runOnce(intake::in));
+    }
+
   }
 
   /**
