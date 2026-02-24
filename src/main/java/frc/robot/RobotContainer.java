@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
@@ -39,7 +41,8 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
-
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing selection of desired auto
   private final SendableChooser<Command> autoChooser;
 
@@ -187,12 +190,11 @@ public class RobotContainer
       driverPS5.R1().onTrue(Commands.none());
     } else
     {
-      driverPS5.cross().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverPS5.square().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverPS5.options().whileTrue(Commands.none());
-      driverPS5.create().whileTrue(Commands.none());
+      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverPS5.create().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverPS5.R1().onTrue(Commands.none());
+      driverPS5.R1().onTrue(Commands.runOnce(shooter::shoot));
+      driverPS5.L2().whileTrue(Commands.runOnce(intake::intake));
     }
 
   }
