@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "New Path"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Leave-Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake-Fuel"
+                }
+              }
+            ]
           }
         }
       ]
