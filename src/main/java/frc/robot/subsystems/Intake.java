@@ -7,16 +7,37 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
-  private final SparkMax m_index = new SparkMax(21, MotorType.kBrushless); // TODO: check
+  private final SparkMax intaker = new SparkMax(21, MotorType.kBrushless);
+  private final SparkMax driver = new SparkMax(22, MotorType.kBrushless);
   /** Creates a new Indexer. */
   public Intake() {}
 
-  public void intake() {
-    m_index.set(1);
+  public Command intake() {
+    return Commands.run(() -> {
+            intaker.set(-1);
+        }).handleInterrupt(intaker::stopMotor);
+  }
+
+  public Command stop() {
+    return Commands.runOnce(() -> {
+            intaker.stopMotor();
+        });
+  }
+
+  public Command up() {
+    return Commands.runOnce(() -> driver.set(-1))
+            .handleInterrupt(driver::stopMotor);
+  }
+
+  public Command down() {
+    return Commands.runOnce(() -> driver.set(1))
+            .handleInterrupt(driver::stopMotor);
   }
   
   @Override

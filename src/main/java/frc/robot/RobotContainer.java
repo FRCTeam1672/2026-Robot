@@ -179,8 +179,7 @@ public class RobotContainer
 //                              );
 
     }
-    if (DriverStation.isTest())
-    {
+    if (DriverStation.isTest()) {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
 
       driverPS5.square().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
@@ -188,13 +187,18 @@ public class RobotContainer
       driverPS5.create().whileTrue(drivebase.centerModulesCommand());
       driverPS5.L1().onTrue(Commands.none());
       driverPS5.R1().onTrue(Commands.none());
-    } else
-    {
+    } else {
+
       driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverPS5.create().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverPS5.R1().onTrue(Commands.runOnce(shooter::shoot));
-      driverPS5.L2().whileTrue(Commands.runOnce(intake::intake));
+      //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      
+      driverPS5.R2().whileTrue(shooter.shoot());
+      driverPS5.L2().whileTrue(intake.intake());
+      //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
+      driverPS5.povUp().whileTrue(Commands.runOnce(intake::up));
+      driverPS5.povDown().whileTrue(Commands.runOnce(intake::down));
+    
     }
 
   }
