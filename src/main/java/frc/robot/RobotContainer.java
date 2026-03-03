@@ -182,14 +182,15 @@ public class RobotContainer
     if (DriverStation.isTest()) {
       drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
 
-      driverPS5.square().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverPS5.create().whileTrue(drivebase.centerModulesCommand());
+      driverPS5.create().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      driverPS5.povLeft().whileTrue(drivebase.centerModulesCommand());
       driverPS5.L1().onTrue(Commands.none());
       driverPS5.R1().onTrue(Commands.none());
-    } else {
+    } 
+    else {
 
-      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
+      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
       driverPS5.create().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       

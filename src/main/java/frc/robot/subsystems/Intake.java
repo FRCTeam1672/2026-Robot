@@ -31,12 +31,12 @@ public class Intake extends SubsystemBase {
   }
 
   public Command up() {
-    return Commands.runOnce(() -> driver.set(-1))
+    return Commands.runOnce(() -> driver.set(-0.05))
             .handleInterrupt(driver::stopMotor);
   }
 
   public Command down() {
-    return Commands.runOnce(() -> driver.set(1))
+    return Commands.runOnce(() -> driver.set(0.05))
             .handleInterrupt(driver::stopMotor);
   }
   
