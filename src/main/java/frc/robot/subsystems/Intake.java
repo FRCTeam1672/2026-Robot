@@ -62,14 +62,14 @@ public class Intake extends SubsystemBase {
 
   }
 
-  public Command IntakeDown() {
-    return intakeTo(GROUND_INTAKE_DOWN_POSITION);
+  public Command up() {
+    return Commands.runOnce(() -> driver.set(-0.05))
+            .handleInterrupt(driver::stopMotor);
   }
 
-  public Command intakeTo(double pos){
-    return Commands.runOnce(()->{
-      groundintakePosition=pos;
-    }).andThen(Commands.waitUntil(this:: isIntakeAtPosition));
+  public Command down() {
+    return Commands.runOnce(() -> driver.set(0.05))
+            .handleInterrupt(driver::stopMotor);
   }
   
   @Override
