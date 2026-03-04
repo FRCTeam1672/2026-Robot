@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.FileVersionException;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,6 +28,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+
 import swervelib.SwerveInputStream;
 
 /**
@@ -105,7 +110,14 @@ public class RobotContainer
   public RobotContainer()
   {
     // Configure the trigger bindings
-    configureBindings();
+    try{
+        configureBindings();
+    } catch (FileVersionException | IOException | ParseException e) {
+      DriverStation.reportError("could not configure button bindings.", e.getStackTrace());
+      e.printStackTrace();
+    }
+
+    
     DriverStation.silenceJoystickConnectionWarning(true);
     
     //Create the NamedCommands that will be used in PathPlanner
@@ -132,7 +144,7 @@ public class RobotContainer
    * {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
-  private void configureBindings()
+  private void configureBindings() throws FileVersionException, IOException, ParseException
   {
     Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
@@ -179,16 +191,6 @@ public class RobotContainer
 //                              );
 
     }
-    if (DriverStation.isTest()) {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
-
-      driverPS5.square().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-      driverPS5.create().whileTrue(drivebase.centerModulesCommand());
-      driverPS5.L1().onTrue(Commands.none());
-      driverPS5.R1().onTrue(Commands.none());
-    } else {
-
       driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
       driverPS5.create().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
@@ -196,10 +198,10 @@ public class RobotContainer
       driverPS5.R2().whileTrue(shooter.shoot());
       driverPS5.L2().whileTrue(intake.intake());
       //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
-      driverPS5.povUp().whileTrue(Commands.runOnce(intake::up));
-      driverPS5.povDown().whileTrue(Commands.runOnce(intake::down));
+      driverPS5.povUp().onTrue((intake.IntakeUp()));
+      driverPS5.povDown().onTrue((intake.IntakeDown()));
     
-    }
+    
 
   }
 

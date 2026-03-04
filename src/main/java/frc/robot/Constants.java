@@ -19,7 +19,7 @@ import swervelib.math.Matter;
 public final class Constants
 {
 
-  public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
+  public static final double ROBOT_MASS = (85) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
@@ -39,6 +39,19 @@ public final class Constants
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
 
+  public static class GroundPID{
+    public static final double GROUND_P=0.0;
+    public static final double GROUND_I=0.0;
+    public static final double GROUND_D=0.0;
+  }
+  
+  public static class HomeConstants{
+    public static final double GROUND_INTAKE_HOME_POSITION=0.0;
+  }
+
+  public static class IntakeDownPosition{
+    public static final double GROUND_INTAKE_DOWN_POSITION=3.5;
+  }
   public static class OperatorConstants
   {
 

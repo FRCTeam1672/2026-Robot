@@ -6,6 +6,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,12 +21,20 @@ public class Shooter extends SubsystemBase {
   private final SparkMax index = new SparkMax(23, MotorType.kBrushless);
   
   /** Creates a new Shooter. */
-  public Shooter() {}
+  public Shooter() {
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kCoast);
+    config.smartCurrentLimit(40);
+    top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    index.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  
+  }
   
   public Command shoot() {
     return Commands.run(() -> {
-      top.set(0.6);
-      bottom.set(0.6);
+      top.set(0.7);
+      bottom.set(0.7);
       index.set(1);
     })
     .handleInterrupt(this::stopAll);
