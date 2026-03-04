@@ -31,10 +31,28 @@ public class Shooter extends SubsystemBase {
   
   }
   
-  public Command shoot() {
+  public Command shootTower() {
     return Commands.run(() -> {
       top.set(0.7);
       bottom.set(0.7);
+      index.set(1);
+    })
+    .handleInterrupt(this::stopAll);
+  }
+
+  public Command shootHub() {
+    return Commands.run(() -> {
+      top.set(0.5);
+      bottom.set(0.5);
+      index.set(1);
+    })
+    .handleInterrupt(this::stopAll);
+  }
+
+  public Command shootCorner() {
+    return Commands.run(() -> {
+      top.set(.85);
+      bottom.set(0.85);
       index.set(1);
     })
     .handleInterrupt(this::stopAll);

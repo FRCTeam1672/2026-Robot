@@ -40,9 +40,9 @@ public final class Constants
   }
 
   public static class GroundPID{
-    public static final double GROUND_P=0.0;
+    public static final double GROUND_P=0.00001;
     public static final double GROUND_I=0.0;
-    public static final double GROUND_D=0.0;
+    public static final double GROUND_D=0.002;
   }
   
   public static class HomeConstants{
@@ -50,7 +50,7 @@ public final class Constants
   }
 
   public static class IntakeDownPosition{
-    public static final double GROUND_INTAKE_DOWN_POSITION=3.5;
+    public static final double GROUND_INTAKE_DOWN_POSITION=2.0;
   }
   public static class OperatorConstants
   {

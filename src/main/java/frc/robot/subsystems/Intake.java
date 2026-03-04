@@ -56,20 +56,21 @@ public class Intake extends SubsystemBase {
     return MathUtil.isNear(groundintakePosition,driver.getEncoder().getPosition(),.5 );
   }
   
-  public Command IntakeUp() {
-    return Commands.run(() -> { groundintakePosition=GROUND_INTAKE_HOME_POSITION;
+  public Command homeIntake() {
+    return Commands.runOnce(() -> {
+      groundintakePosition=GROUND_INTAKE_HOME_POSITION;
     }).andThen(Commands.waitUntil(this::isIntakeHomed));
 
   }
 
-  public Command up() {
-    return Commands.runOnce(() -> driver.set(-0.05))
-            .handleInterrupt(driver::stopMotor);
+  public Command intakeDown() {
+    return intakeTo(GROUND_INTAKE_DOWN_POSITION);
   }
 
-  public Command down() {
-    return Commands.runOnce(() -> driver.set(0.05))
-            .handleInterrupt(driver::stopMotor);
+  public Command intakeTo(double pos){
+    return Commands.runOnce(() -> {
+      groundintakePosition=pos;
+    }).andThen(Commands.waitUntil(this:: isIntakeAtPosition));
   }
   
   @Override

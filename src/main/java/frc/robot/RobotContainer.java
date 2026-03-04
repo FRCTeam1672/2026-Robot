@@ -27,6 +27,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
+import static edu.wpi.first.units.Units.Newton;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -43,6 +46,7 @@ public class RobotContainer
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandPS5Controller driverPS5 = new CommandPS5Controller(0);
+  final CommandPS5Controller oppsPS5 = new CommandPS5Controller(1);
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
@@ -190,28 +194,32 @@ public class RobotContainer
 //              new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
 //                              );
 
-    }
-    if (DriverStation.isTest()) {
-      drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
-
-      driverPS5.create().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
-      driverPS5.povLeft().whileTrue(drivebase.centerModulesCommand());
-      driverPS5.L1().onTrue(Commands.none());
-      driverPS5.R1().onTrue(Commands.none());
-    } 
-    else {
-
-      driverPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
-      driverPS5.create().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
+    
+      driverPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      driverPS5.options().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
       //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
-      driverPS5.R2().whileTrue(shooter.shoot());
+      driverPS5.R2().whileTrue(shooter.shootTower());
+      driverPS5.R1().whileTrue(shooter.shootHub());
+      driverPS5.L1().whileTrue(shooter.shootCorner());
       driverPS5.L2().whileTrue(intake.intake());
       //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
-      driverPS5.povUp().onTrue((intake.IntakeUp()));
-      driverPS5.povDown().onTrue((intake.IntakeDown()));
-    
+      driverPS5.triangle().onTrue((intake.homeIntake()));
+      driverPS5.cross().onTrue((intake.intakeDown()));
+
+      //opps
+      oppsPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      oppsPS5.options().onTrue(Commands.runOnce(drivebase::lock));
+      //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      
+      oppsPS5.R2().whileTrue(shooter.shootTower());
+      oppsPS5.R1().whileTrue(shooter.shootHub());
+      oppsPS5.L1().whileTrue(shooter.shootCorner());
+      oppsPS5.L2().whileTrue(intake.intake());
+      //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
+      oppsPS5.triangle().onTrue((intake.homeIntake()));
+      oppsPS5.cross().onTrue((intake.intakeDown()));
+    }
     
 
   }
