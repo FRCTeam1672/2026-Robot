@@ -6,17 +6,36 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static frc.robot.Constants.HomeConstants.GROUND_INTAKE_HOME_POSITION;
+import static frc.robot.Constants.IntakeDownPosition.GROUND_INTAKE_DOWN_POSITION;
 
 public class Intake extends SubsystemBase {
 
   private final SparkMax intaker = new SparkMax(21, MotorType.kBrushless);
   private final SparkMax driver = new SparkMax(22, MotorType.kBrushless);
+
+  private double groundintakePosition=GROUND_INTAKE_HOME_POSITION;
+  
+
   /** Creates a new Indexer. */
-  public Intake() {}
+  public Intake() {
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.idleMode(IdleMode.kBrake);
+    config.smartCurrentLimit(20);
+    driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    intaker.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
 
   public Command intake() {
     return Commands.run(() -> {
@@ -28,6 +47,19 @@ public class Intake extends SubsystemBase {
     return Commands.runOnce(() -> {
             intaker.stopMotor();
         });
+  }
+  public boolean isIntakeHomed(){
+    return MathUtil.isNear(GROUND_INTAKE_HOME_POSITION,driver.getEncoder().getPosition(),.5 );
+  }
+
+  public Boolean isIntakeAtPosition(){
+    return MathUtil.isNear(groundintakePosition,driver.getEncoder().getPosition(),.5 );
+  }
+  
+  public Command IntakeUp() {
+    return Commands.run(() -> { groundintakePosition=GROUND_INTAKE_HOME_POSITION;
+    }).andThen(Commands.waitUntil(this::isIntakeHomed));
+
   }
 
   public Command up() {
