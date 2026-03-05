@@ -19,6 +19,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.HomeConstants.GROUND_INTAKE_HOME_POSITION;
 import static frc.robot.Constants.IntakeDownPosition.GROUND_INTAKE_DOWN_POSITION;
+import static frc.robot.Constants.GroundPID.GROUND_I;
+import static frc.robot.Constants.GroundPID.GROUND_P;
+import static frc.robot.Constants.GroundPID.GROUND_D;
 
 public class Intake extends SubsystemBase {
 
@@ -35,6 +38,14 @@ public class Intake extends SubsystemBase {
     config.smartCurrentLimit(20);
     driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intaker.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    //hopefully this works this time
+    config.smartCurrentLimit(40);
+    config.idleMode(IdleMode.kBrake);
+    config.closedLoop.pid(GROUND_P, GROUND_I, GROUND_D);
+    config.closedLoop.maxOutput(.05);
+    config.closedLoop.minOutput(-.05);
+    driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command intake() {

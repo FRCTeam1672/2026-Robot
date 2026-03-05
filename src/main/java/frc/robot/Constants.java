@@ -4,9 +4,17 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -34,7 +42,13 @@ public final class Constants
 
   public static final class DrivebaseConstants
   {
-
+    public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(0.2);
+    public static final PPHolonomicDriveController PP_CONTROLLER = new PPHolonomicDriveController(
+      // PPHolonomicController is the built in path following controller for holonomic
+      // drive trains
+      new PIDConstants(5.7, 0.0, 0.02),
+      // Translation PID constants
+      new PIDConstants(1.9, 0.0, 0.02));
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
