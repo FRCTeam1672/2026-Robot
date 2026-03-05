@@ -196,8 +196,8 @@ public class RobotContainer
 
     
       driverPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
-      driverPS5.options().onTrue(Commands.runOnce(drivebase::addFakeVisionReading));
-      //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+      
+      //driverPS5.options().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
       driverPS5.R2().whileTrue(shooter.shootTower());
       driverPS5.R1().whileTrue(shooter.shootHub());
@@ -209,8 +209,7 @@ public class RobotContainer
 
       //opps
       oppsPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
-      oppsPS5.options().onTrue(Commands.runOnce(drivebase::lock));
-      //driverPS5.L1().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
+     
       
       oppsPS5.R2().whileTrue(shooter.shootTower());
       oppsPS5.R1().whileTrue(shooter.shootHub());

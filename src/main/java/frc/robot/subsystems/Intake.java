@@ -41,7 +41,7 @@ public class Intake extends SubsystemBase {
 
     //hopefully this works this time
     config.smartCurrentLimit(40);
-    config.idleMode(IdleMode.kBrake);
+    config.idleMode(IdleMode.kCoast);
     config.closedLoop.pid(GROUND_P, GROUND_I, GROUND_D);
     config.closedLoop.maxOutput(.05);
     config.closedLoop.minOutput(-.05);

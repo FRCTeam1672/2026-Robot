@@ -68,12 +68,12 @@ public class Vision
   //fix the camera positions
  private final Transform3d frontCamPos = new Transform3d(new Translation3d(Units.inchesToMeters(0),
             Units.inchesToMeters(-11),
-            Units.inchesToMeters(22)),
+            Units.inchesToMeters(21)),
             new Rotation3d(0, Math.toRadians(0), Math.toRadians(-3.3)));
 
-    private final Transform3d backCamPos = new Transform3d(new Translation3d(Units.inchesToMeters(4),
+    private final Transform3d backCamPos = new Transform3d(new Translation3d(Units.inchesToMeters(2.5),
             Units.inchesToMeters(-11),
-            Units.inchesToMeters(18)),
+            Units.inchesToMeters(14)),
             new Rotation3d(0, Math.toRadians(-2), Math.toRadians(179)));
   
     private Trigger backCamTrigger = new Trigger(backCam::isConnected);
