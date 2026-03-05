@@ -22,6 +22,10 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import java.awt.Desktop;
 import java.util.ArrayList;
@@ -40,20 +44,40 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
-
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification;
 
 /**
  * Example PhotonVision class to aid in the pursuit of accurate odometry. Taken from
  * https://gitlab.com/ironclad_code/ironclad-2024/-/blob/master/src/main/java/frc/robot/vision/Vision.java?ref_type=heads
  */
-public class Vision
+public class Vision extends SubsystemBase
 {
-
   /**
    * April Tag Field Layout of the year.
    */
-  public static final AprilTagFieldLayout fieldLayout                     = AprilTagFieldLayout.loadField(
-      AprilTagFields.k2026RebuiltWelded);
+  private final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+  private final PhotonCamera frontCam = new PhotonCamera("1672_Camera1");
+  private final PhotonCamera backCam = new PhotonCamera("1672_Camera2");
+
+  //fix the camera positions
+ private final Transform3d frontCamPos = new Transform3d(new Translation3d(Units.inchesToMeters(0),
+            Units.inchesToMeters(-11),
+            Units.inchesToMeters(22)),
+            new Rotation3d(0, Math.toRadians(0), Math.toRadians(-3.3)));
+
+    private final Transform3d backCamPos = new Transform3d(new Translation3d(Units.inchesToMeters(4),
+            Units.inchesToMeters(-11),
+            Units.inchesToMeters(18)),
+            new Rotation3d(0, Math.toRadians(-2), Math.toRadians(179)));
+  
+    private Trigger backCamTrigger = new Trigger(backCam::isConnected);
+    private Trigger frontCamTrigger = new Trigger(frontCam::isConnected);
+  // Construct PhotonPoseEstimator
+    private final PhotonPoseEstimator frontPoseEst = new PhotonPoseEstimator(aprilTagFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, frontCamPos);
+    private final PhotonPoseEstimator backPoseEst = new PhotonPoseEstimator(aprilTagFieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, backCamPos);
   /**
    * Ambiguity defined as a value between (0,1). Used in {@link Vision#filterPose}.
    */
@@ -152,6 +176,37 @@ public class Vision
                                          camera.curStdDevs);
       }
     }
+
+    //last years code
+    //  public void updatePoseEstimation(SwerveDrive swerve) {
+    //     List<PhotonPipelineResult> frontResults = frontCam.getAllUnreadResults();
+    //     List<PhotonPipelineResult> backResults = backCam.getAllUnreadResults();
+    //     if (!frontResults.isEmpty()) {
+    //         PhotonPipelineResult frontPhotonPipelineResult = frontResults.get(0);
+    //         Optional<EstimatedRobotPose> frontUpdate = frontPoseEst.update(frontPhotonPipelineResult);
+    //         if (frontUpdate.isPresent()) {
+    //             if(frontPhotonPipelineResult.getBestTarget().poseAmbiguity < 0.4) {
+    //                 EstimatedRobotPose estimatedRobotPose = frontUpdate.get();
+    //                 swerve.field.getObject("FrontPose").setPose(estimatedRobotPose.estimatedPose.toPose2d());
+    //                 swerve.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
+    //                         frontPhotonPipelineResult.getTimestampSeconds());
+    //             }
+    //         }
+    //     }
+    //     if(!backResults.isEmpty()) {
+    //         PhotonPipelineResult backPhotonPipelineResult = backResults.get(0);
+    //         Optional<EstimatedRobotPose> backUpdate = backPoseEst.update(backPhotonPipelineResult);
+    //         if (backUpdate.isPresent()) {
+    //             if(backPhotonPipelineResult.getBestTarget().poseAmbiguity < 0.4) {
+    //             EstimatedRobotPose estimatedRobotPose = backUpdate.get();
+    //             swerve.field.getObject("BackPose").setPose(estimatedRobotPose.estimatedPose.toPose2d());
+    //             swerve.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(),
+    //                     backPhotonPipelineResult.getTimestampSeconds());
+    //             }
+    //         }
+    //     }
+        
+    // }
 
   }
 
