@@ -27,6 +27,9 @@ public class Shooter extends SubsystemBase {
     config.smartCurrentLimit(40);
     top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    //lower currentLimit 550
+    config.smartCurrentLimit(20);
     index.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
   }
