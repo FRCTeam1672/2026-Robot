@@ -177,21 +177,14 @@ public class SwerveSubsystem extends SubsystemBase
               swerveDrive.drive(
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-                  moduleFeedForwards.linearForces()
-                               );
+                  moduleFeedForwards.linearForces());
             } else
             {
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
             }
           },
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-          new PPHolonomicDriveController(
-              // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
-              // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
-              // Rotation PID constants
-          ),
+          Constants.DrivebaseConstants.PP_CONTROLLER,
           config,
           // The robot configuration
           () -> {
