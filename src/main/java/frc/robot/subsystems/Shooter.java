@@ -49,6 +49,7 @@ public class Shooter extends SubsystemBase {
       top.set(0.5);
       bottom.set(0.5);
       index.set(1);
+      hopper.set(1);
     })
     .handleInterrupt(this::stopAll);
   }
@@ -58,6 +59,7 @@ public class Shooter extends SubsystemBase {
       top.set(.85);
       bottom.set(0.85);
       index.set(1);
+      hopper.set(1);
     })
     .handleInterrupt(this::stopAll);
   }

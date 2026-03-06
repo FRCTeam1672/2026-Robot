@@ -6,11 +6,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,8 +28,7 @@ public class Intake extends SubsystemBase {
   private final SparkMax intaker = new SparkMax(21, MotorType.kBrushless);
   private final SparkMax driver = new SparkMax(22, MotorType.kBrushless);
 
-  private double groundintakePosition=GROUND_INTAKE_HOME_POSITION;
-  
+  private double groundintakePosition = GROUND_INTAKE_HOME_POSITION;
 
   /** Creates a new Indexer. */
   public Intake() {
@@ -39,7 +38,7 @@ public class Intake extends SubsystemBase {
     driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intaker.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    //hopefully this works this time
+    // hopefully this works this time
     config.smartCurrentLimit(40);
     config.idleMode(IdleMode.kCoast);
     config.closedLoop.pid(GROUND_P, GROUND_I, GROUND_D);
@@ -50,26 +49,27 @@ public class Intake extends SubsystemBase {
 
   public Command intake() {
     return Commands.run(() -> {
-            intaker.set(-1);
-        }).handleInterrupt(intaker::stopMotor);
+      intaker.set(-1);
+    }).handleInterrupt(intaker::stopMotor);
   }
 
   public Command stop() {
     return Commands.runOnce(() -> {
-            intaker.stopMotor();
-        });
-  }
-  public boolean isIntakeHomed(){
-    return MathUtil.isNear(GROUND_INTAKE_HOME_POSITION,driver.getEncoder().getPosition(),.5 );
+      intaker.stopMotor();
+    });
   }
 
-  public Boolean isIntakeAtPosition(){
-    return MathUtil.isNear(groundintakePosition,driver.getEncoder().getPosition(),.5 );
+  public boolean isIntakeHomed() {
+    return MathUtil.isNear(GROUND_INTAKE_HOME_POSITION, driver.getEncoder().getPosition(), .5);
   }
-  
+
+  public Boolean isIntakeAtPosition() {
+    return MathUtil.isNear(groundintakePosition, driver.getEncoder().getPosition(), .5);
+  }
+
   public Command homeIntake() {
     return Commands.runOnce(() -> {
-      groundintakePosition=GROUND_INTAKE_HOME_POSITION;
+      groundintakePosition = GROUND_INTAKE_HOME_POSITION;
     }).andThen(Commands.waitUntil(this::isIntakeHomed));
 
   }
@@ -78,14 +78,14 @@ public class Intake extends SubsystemBase {
     return intakeTo(GROUND_INTAKE_DOWN_POSITION);
   }
 
-  public Command intakeTo(double pos){
+  public Command intakeTo(double pos) {
     return Commands.runOnce(() -> {
-      groundintakePosition=pos;
-    }).andThen(Commands.waitUntil(this:: isIntakeAtPosition));
+      groundintakePosition = pos;
+    }).andThen(Commands.waitUntil(this::isIntakeAtPosition));
   }
-  
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    driver.getClosedLoopController().setSetpoint(groundintakePosition, ControlType.kPosition);
   }
 }

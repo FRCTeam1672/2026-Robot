@@ -199,7 +199,7 @@ public class RobotContainer
       
       //driverPS5.options().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
-      driverPS5.R2().whileTrue(shooter.shootTower());
+      driverPS5.R2().onTrue(shooter.shootTower());
       driverPS5.R1().whileTrue(shooter.shootHub());
       driverPS5.L1().whileTrue(shooter.shootCorner());
       driverPS5.L2().whileTrue(intake.intake());
