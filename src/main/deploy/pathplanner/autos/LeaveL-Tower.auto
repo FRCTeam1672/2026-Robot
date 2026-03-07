@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeaveR-Right"
+            "pathName": "LeaveL-Tower"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot-Tower"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Leave on the Right Side of the Field",
+  "folder": "Leaving on the Left Side of the Field",
   "choreoAuto": false
 }

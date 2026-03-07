@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeaveR-Right"
+            "pathName": "LeaveR-Tower"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot-Tower"
           }
         }
       ]
