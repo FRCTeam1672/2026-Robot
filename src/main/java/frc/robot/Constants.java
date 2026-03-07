@@ -16,7 +16,6 @@ import swervelib.math.Matter;
 
 import static edu.wpi.first.units.Units.*;
 
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
  * class should not be used for any other purpose. All constants should be declared globally (i.e. public static). Do
@@ -43,31 +42,29 @@ public final class Constants
 
   public static final class DrivebaseConstants
   {
-
-    // Hold time on motor brakes when disabled
-    public static final double WHEEL_LOCK_TIME = 10; // seconds
     public static final Rotation2d kRotationTolerance = Rotation2d.fromDegrees(0.2);
     public static final PPHolonomicDriveController PP_CONTROLLER = new PPHolonomicDriveController(
       // PPHolonomicController is the built in path following controller for holonomic
       // drive trains
       new PIDConstants(5.7, 0.0, 0.02),
       // Translation PID constants
-      new PIDConstants(1.9, 0.0, 0.02)
-    
+      new PIDConstants(1.9, 0.0, 0.02));
+    // Hold time on motor brakes when disabled
+    public static final double WHEEL_LOCK_TIME = 10; // seconds
   }
 
   public static class GroundPID{
-    public static final double GROUND_P=0.0;
-    public static final double GROUND_I=0.0;
-    public static final double GROUND_D=0.0;
+    public static final double GROUND_P = 0.25;
+    public static final double GROUND_I = 0.0;
+    public static final double GROUND_D = 0.05;
   }
   
   public static class HomeConstants{
-    public static final double GROUND_INTAKE_HOME_POSITION=0.0;
+    public static final double GROUND_INTAKE_HOME_POSITION = 0.0;
   }
 
   public static class IntakeDownPosition{
-    public static final double GROUND_INTAKE_DOWN_POSITION=3.5;
+    public static final double GROUND_INTAKE_DOWN_POSITION = 30.0;
   }
   public static class OperatorConstants
   {

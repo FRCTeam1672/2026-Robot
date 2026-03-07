@@ -1,0 +1,25 @@
+{
+  "version": "2026.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveM-Depot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake-Fuel"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Leave on the Middle of the Field",
+  "choreoAuto": false
+}

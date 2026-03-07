@@ -6,11 +6,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,8 +29,7 @@ public class Intake extends SubsystemBase {
   private final SparkMax intaker = new SparkMax(21, MotorType.kBrushless);
   private final SparkMax driver = new SparkMax(22, MotorType.kBrushless);
 
-  private double groundintakePosition=GROUND_INTAKE_HOME_POSITION;
-  
+  private double groundintakePosition = GROUND_INTAKE_HOME_POSITION;
 
   /** Creates a new Indexer. */
   public Intake() {
@@ -40,55 +39,61 @@ public class Intake extends SubsystemBase {
     driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intaker.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    //Hopefully this works to control the ground intake
+    // hopefully this works this time
     config.smartCurrentLimit(40);
-    config.idleMode(IdleMode.kBrake);
-    config.closedLoop.pid(GROUND_P,GROUND_I,GROUND_D);
-    config.maxOutput(.05);
-    config.minOutput(-.05);
-    driver.congiure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
-    
-    
+    config.idleMode(IdleMode.kCoast);
+    config.closedLoop.pid(GROUND_P, GROUND_I, GROUND_D);
+    config.closedLoop.maxOutput(.3);
+    config.closedLoop.minOutput(-.3);
+    config.inverted(true);
+    driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command intake() {
     return Commands.run(() -> {
-            intaker.set(-1);
-        }).handleInterrupt(intaker::stopMotor);
+      intaker.set(1);
+    }).handleInterrupt(intaker::stopMotor);
+  }
+
+  public Command reverse() {
+    return Commands.run(() -> {
+      intaker.set(-1);
+    }).handleInterrupt(intaker::stopMotor);
   }
 
   public Command stop() {
     return Commands.runOnce(() -> {
-            intaker.stopMotor();
-        });
-  }
-  public boolean isIntakeHomed(){
-    return MathUtil.isNear(GROUND_INTAKE_HOME_POSITION,driver.getEncoder().getPosition(),.5 );
+      intaker.stopMotor();
+    });
   }
 
-  public Boolean isIntakeAtPosition(){
-    return MathUtil.isNear(groundintakePosition,driver.getEncoder().getPosition(),.5 );
+  public boolean isIntakeHomed() {
+    return MathUtil.isNear(GROUND_INTAKE_HOME_POSITION, driver.getEncoder().getPosition(), .5);
   }
-  
-  public Command IntakeUp() {
-    return Commands.run(() -> { groundintakePosition=GROUND_INTAKE_HOME_POSITION;
+
+  public Boolean isIntakeAtPosition() {
+    return MathUtil.isNear(groundintakePosition, driver.getEncoder().getPosition(), .5);
+  }
+
+  public Command homeIntake() {
+    return Commands.runOnce(() -> {
+      groundintakePosition = GROUND_INTAKE_HOME_POSITION;
     }).andThen(Commands.waitUntil(this::isIntakeHomed));
 
   }
 
-  public Command up() {
-    return Commands.runOnce(() -> driver.set(-0.05))
-            .handleInterrupt(driver::stopMotor);
+  public Command intakeDown() {
+    return intakeTo(GROUND_INTAKE_DOWN_POSITION);
   }
 
-  public Command down() {
-    return Commands.runOnce(() -> driver.set(0.05))
-            .handleInterrupt(driver::stopMotor);
+  public Command intakeTo(double pos) {
+    return Commands.runOnce(() -> {
+      groundintakePosition = pos;
+    }).andThen(Commands.waitUntil(this::isIntakeAtPosition));
   }
-  
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    driver.getClosedLoopController().setSetpoint(groundintakePosition, ControlType.kPosition);
   }
 }

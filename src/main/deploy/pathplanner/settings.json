@@ -3,7 +3,11 @@
   "robotLength": 0.902,
   "holonomicMode": true,
   "pathFolders": [],
-  "autoFolders": [],
+  "autoFolders": [
+    "Leave on the Right Side of the Field",
+    "Leaving on the Left Side of the Field",
+    "Leave on the Middle of the Field"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

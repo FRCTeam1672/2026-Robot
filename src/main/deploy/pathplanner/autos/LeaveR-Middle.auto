@@ -1,0 +1,19 @@
+{
+  "version": "2026.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveR-Middle"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Leave on the Right Side of the Field",
+  "choreoAuto": false
+}
