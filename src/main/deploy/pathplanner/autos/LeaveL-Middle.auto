@@ -1,0 +1,19 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveL-Middle"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Leaving on the Left Side of the Field",
+  "choreoAuto": false
+}

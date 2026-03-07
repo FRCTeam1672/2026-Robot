@@ -126,7 +126,13 @@ public class RobotContainer
     
     //Create the NamedCommands that will be used in PathPlanner
     NamedCommands.registerCommand("Intake-Fuel", intake.intake());
-
+    NamedCommands.registerCommand("Shoot-Corner", shooter.shootCorner());
+    NamedCommands.registerCommand("Shoot-Hub", shooter.shootHub());
+    NamedCommands.registerCommand("Shoot-Tower", shooter.shootTower());
+    NamedCommands.registerCommand("Intake-Down", intake.intakeDown());
+    NamedCommands.registerCommand("Intake-Home", intake.homeIntake());
+    
+    
     //Have the autoChooser pull in all PathPlanner autos as options
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -203,7 +209,7 @@ public class RobotContainer
       driverPS5.R1().whileTrue(shooter.shootHub());
       driverPS5.L1().whileTrue(shooter.shootCorner());
       driverPS5.L2().whileTrue(intake.intake());
-      //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
+      
       driverPS5.triangle().onTrue((intake.homeIntake()));
       driverPS5.cross().onTrue((intake.intakeDown()));
 

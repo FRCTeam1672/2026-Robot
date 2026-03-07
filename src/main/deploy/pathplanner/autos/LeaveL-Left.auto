@@ -11,13 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Leave-Left"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake-Fuel"
+                  "pathName": "LeaveL-Left"
                 }
               }
             ]
@@ -27,6 +21,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Leaving on the Left Side of the Field",
   "choreoAuto": false
 }

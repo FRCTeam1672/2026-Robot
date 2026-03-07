@@ -42,14 +42,15 @@ public class Intake extends SubsystemBase {
     config.smartCurrentLimit(40);
     config.idleMode(IdleMode.kCoast);
     config.closedLoop.pid(GROUND_P, GROUND_I, GROUND_D);
-    config.closedLoop.maxOutput(.05);
-    config.closedLoop.minOutput(-.05);
+    config.closedLoop.maxOutput(.3);
+    config.closedLoop.minOutput(-.3);
+    config.inverted(true);
     driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command intake() {
     return Commands.run(() -> {
-      intaker.set(-1);
+      intaker.set(1);
     }).handleInterrupt(intaker::stopMotor);
   }
 
