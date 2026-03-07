@@ -114,7 +114,7 @@ public class RobotContainer
   public RobotContainer()
   {
     // Configure the trigger bindings
-    try{
+    try {
         configureBindings();
     } catch (FileVersionException | IOException | ParseException e) {
       DriverStation.reportError("could not configure button bindings.", e.getStackTrace());
@@ -194,12 +194,12 @@ public class RobotContainer
 //              new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
 //                              );
 
-    
+    }
       driverPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
       
       //driverPS5.options().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
-      driverPS5.R2().onTrue(shooter.shootTower());
+      driverPS5.R2().whileTrue(shooter.shootTower());
       driverPS5.R1().whileTrue(shooter.shootHub());
       driverPS5.L1().whileTrue(shooter.shootCorner());
       driverPS5.L2().whileTrue(intake.intake());
@@ -218,7 +218,6 @@ public class RobotContainer
       //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
-    }
     
 
   }
