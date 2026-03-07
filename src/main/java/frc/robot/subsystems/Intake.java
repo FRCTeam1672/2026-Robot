@@ -54,6 +54,12 @@ public class Intake extends SubsystemBase {
     }).handleInterrupt(intaker::stopMotor);
   }
 
+  public Command reverse() {
+    return Commands.run(() -> {
+      intaker.set(-1);
+    }).handleInterrupt(intaker::stopMotor);
+  }
+
   public Command stop() {
     return Commands.runOnce(() -> {
       intaker.stopMotor();

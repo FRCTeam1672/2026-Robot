@@ -36,21 +36,21 @@ public class Shooter extends SubsystemBase {
   
   public Command shootTower() {
     return Commands.run(() -> {
-      top.set(-0.7);
-      bottom.set
-      (0.7);
+      top.set(-0.65);
+      bottom.set(0.65);
       index.set(-1);
-      hopper.set(-1); // or -1 depending on how the motor is oriented
+      hopper.set(.5); // or -1 depending on how the motor is oriented
+      
     })
     .handleInterrupt(this::stopAll);
   }
 
   public Command shootHub() {
     return Commands.run(() -> {
-      top.set(-0.5);
-      bottom.set(0.5);
+      top.set(-0.4);
+      bottom.set(0.4);
       index.set(-1);
-      hopper.set(-1);
+      hopper.set(.5);
     })
     .handleInterrupt(this::stopAll);
   }
@@ -60,7 +60,7 @@ public class Shooter extends SubsystemBase {
       top.set(-.85);
       bottom.set(0.85);
       index.set(-1);
-      hopper.set(-1);
+      hopper.set(.5);
     })
     .handleInterrupt(this::stopAll);
   }

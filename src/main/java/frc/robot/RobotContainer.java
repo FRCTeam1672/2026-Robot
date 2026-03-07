@@ -61,7 +61,7 @@ public class RobotContainer
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                 () -> driverPS5.getLeftY() * -1,
                                                                 () -> driverPS5.getLeftX() * -1)
-                                                            .withControllerRotationAxis(driverPS5::getRightX)
+                                                            .withControllerRotationAxis(() -> driverPS5.getRightX() * -1)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
@@ -202,6 +202,7 @@ public class RobotContainer
 
     }
       driverPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      driverPS5.options().onTrue(Commands.runOnce(drivebase::zeroGyro));
       
       //driverPS5.options().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
@@ -215,9 +216,12 @@ public class RobotContainer
 
       //opps
       oppsPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      oppsPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
      
       
       oppsPS5.R2().whileTrue(shooter.shootTower());
+      //oppsPS5.R2().whileTrue(intake.reverse());
+
       oppsPS5.R1().whileTrue(shooter.shootHub());
       oppsPS5.L1().whileTrue(shooter.shootCorner());
       oppsPS5.L2().whileTrue(intake.intake());
