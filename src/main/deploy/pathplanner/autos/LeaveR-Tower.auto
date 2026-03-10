@@ -11,9 +11,53 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeaveR-Tower(Shake)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot-Tower"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeaveR-Tower(Shake-Again)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot-Tower"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Shoot-Tower"
+            "name": "Stop-All"
           }
         }
       ]

@@ -41,7 +41,7 @@ public class Shooter extends SubsystemBase {
       top.set(-0.65);
       bottom.set(0.65);
       index.set(-1);
-      hopper.set(.5); // or -1 depending on how the motor is oriented
+      hopper.set(-0.5); // or -1 depending on how the motor is oriented
       
     })
     .handleInterrupt(this::stopAll);
@@ -52,7 +52,7 @@ public class Shooter extends SubsystemBase {
       top.set(-0.4);
       bottom.set(0.4);
       index.set(-1);
-      hopper.set(.5);
+      hopper.set(-0.5);
     })
     .handleInterrupt(this::stopAll);
   }
@@ -62,7 +62,7 @@ public class Shooter extends SubsystemBase {
       top.set(-.85);
       bottom.set(0.85);
       index.set(-1);
-      hopper.set(.5);
+      hopper.set(-0.5);
     })
     .handleInterrupt(this::stopAll);
   }
@@ -72,6 +72,15 @@ public class Shooter extends SubsystemBase {
     top.stopMotor();
     bottom.stopMotor();
     hopper.stopMotor();
+  }
+
+  public Command stopCommand() {
+    return Commands.run(() -> {
+      index.stopMotor();
+      top.stopMotor();
+      bottom.stopMotor();
+      hopper.stopMotor();
+    });
   }
 
   @Override
