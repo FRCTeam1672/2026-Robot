@@ -1,0 +1,69 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveR-Tower"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeaveR-Tower(Shake)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot-Tower"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeaveR-Tower(Shake-Again)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot-Tower"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop-All"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Leave on the Right Side of the Field",
+  "choreoAuto": false
+}

@@ -54,14 +54,16 @@ public class RobotContainer
   private final Shooter shooter = new Shooter();
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing selection of desired auto
   private final SendableChooser<Command> autoChooser;
+  
+  private boolean slowMode = false;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverPS5.getLeftY() * -1,
-                                                                () -> driverPS5.getLeftX() * -1)
-                                                            .withControllerRotationAxis(driverPS5::getRightX)
+                                                                () -> driverPS5.getLeftY() * (slowMode ? -0.4 : -1),
+                                                                () -> driverPS5.getLeftX() * (slowMode ? -0.4 : -1))
+                                                            .withControllerRotationAxis(() -> driverPS5.getRightX() * -1)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
@@ -131,6 +133,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Shoot-Tower", shooter.shootTower());
     NamedCommands.registerCommand("Intake-Down", intake.intakeDown());
     NamedCommands.registerCommand("Intake-Home", intake.homeIntake());
+    NamedCommands.registerCommand("Stop-All", intake.stop().andThen(shooter.stopCommand()));
     
     
     //Have the autoChooser pull in all PathPlanner autos as options
@@ -202,25 +205,31 @@ public class RobotContainer
 
     }
       driverPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      driverPS5.options().onTrue(Commands.runOnce(drivebase::zeroGyro));
       
       //driverPS5.options().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
       
-      driverPS5.R2().whileTrue(shooter.shootTower());
-      driverPS5.R1().whileTrue(shooter.shootHub());
-      driverPS5.L1().whileTrue(shooter.shootCorner());
+      //driverPS5.R2().whileTrue(shooter.shootTower());
+      //driverPS5.R1().whileTrue(shooter.shootHub());
+      //driverPS5.L1().whileTrue(shooter.shootCorner());
       driverPS5.L2().whileTrue(intake.intake());
       
-      driverPS5.triangle().onTrue((intake.homeIntake()));
-      driverPS5.cross().onTrue((intake.intakeDown()));
+      driverPS5.circle().onTrue(slowMode());
+      
+      //driverPS5.triangle().onTrue((intake.homeIntake()));
+      //driverPS5.cross().onTrue((intake.intakeDown()));
 
       //opps
-      oppsPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      //oppsPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
+      //oppsPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
      
       
       oppsPS5.R2().whileTrue(shooter.shootTower());
+      //oppsPS5.R2().whileTrue(intake.reverse());
+
       oppsPS5.R1().whileTrue(shooter.shootHub());
       oppsPS5.L1().whileTrue(shooter.shootCorner());
-      oppsPS5.L2().whileTrue(intake.intake());
+      //oppsPS5.L2().whileTrue(intake.intake());
       //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
@@ -244,5 +253,25 @@ public class RobotContainer
   public void setMotorBrake(boolean brake)
   {
     drivebase.setMotorBrake(brake);
+  }
+
+  public void zeroGyroWithAlliance() {
+    drivebase.zeroGyroWithAlliance();
+  }
+
+  public Pose2d getPose()
+  {
+    return drivebase.getPose();
+  }
+
+  public Command slowMode()
+  {
+    return Commands.run(() -> {
+      slowMode = true;
+    }).handleInterrupt(() -> slowMode = false);
+  }
+
+  public boolean isSlowMode() {
+    return slowMode;
   }
 }

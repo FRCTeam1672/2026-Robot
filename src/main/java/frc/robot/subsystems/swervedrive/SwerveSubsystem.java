@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.subsystems.swervedrive.Vision.Cameras;
+import frc.robot.subsystems.swervedrive.BadVision.Cameras;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -62,12 +62,12 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean     visionDriveTest = false;
+  private final boolean     visionDriveTest = true;
  
   /**
    * PhotonVision class to keep an accurate odometry.
    */
-  private       Vision      vision;
+  private       VisionSubsystem      vision;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -76,7 +76,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
    public SwerveSubsystem(File directory)
   { 
-    boolean blueAlliance = false;
+    boolean blueAlliance =
+    DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue)
+    == DriverStation.Alliance.Blue;
     Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
                                                                       Meter.of(4)),
                                                     Rotation2d.fromDegrees(0))
@@ -131,7 +133,7 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setupPhotonVision()
   {
-    vision = new Vision(swerveDrive::getPose, swerveDrive.field);
+    vision = new VisionSubsystem(swerveDrive, swerveDrive.field);
   }
 
   @Override
@@ -141,6 +143,7 @@ public class SwerveSubsystem extends SubsystemBase
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
+      vision.updatePoseEstimation(swerveDrive);
       vision.updatePoseEstimation(swerveDrive);
     }
   }
@@ -177,21 +180,14 @@ public class SwerveSubsystem extends SubsystemBase
               swerveDrive.drive(
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-                  moduleFeedForwards.linearForces()
-                               );
+                  moduleFeedForwards.linearForces());
             } else
             {
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
             }
           },
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-          new PPHolonomicDriveController(
-              // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
-              // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
-              // Rotation PID constants
-          ),
+          Constants.DrivebaseConstants.PP_CONTROLLER,
           config,
           // The robot configuration
           () -> {
@@ -236,10 +232,8 @@ public class SwerveSubsystem extends SubsystemBase
         var result = resultO.get();
         if (result.hasTargets())
         {
-          drive(getTargetSpeeds(0,
-                                0,
-                                Rotation2d.fromDegrees(result.getBestTarget()
-                                                             .getYaw()))); // Not sure if this will work, more math may be required.
+          double yaw = result.getBestTarget().getYaw();
+            drive(new Translation2d(), -Math.toRadians(yaw), true); // Not sure if this will work, more math may be required.
         }
       }
     });

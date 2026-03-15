@@ -19,9 +19,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.HomeConstants.GROUND_INTAKE_HOME_POSITION;
 import static frc.robot.Constants.IntakeDownPosition.GROUND_INTAKE_DOWN_POSITION;
-import static frc.robot.Constants.GroundPID.GROUND_I;
 import static frc.robot.Constants.GroundPID.GROUND_P;
+import static frc.robot.Constants.GroundPID.GROUND_I;
 import static frc.robot.Constants.GroundPID.GROUND_D;
+
 
 public class Intake extends SubsystemBase {
 
@@ -51,6 +52,12 @@ public class Intake extends SubsystemBase {
   public Command intake() {
     return Commands.run(() -> {
       intaker.set(1);
+    }).handleInterrupt(intaker::stopMotor);
+  }
+
+  public Command reverse() {
+    return Commands.run(() -> {
+      intaker.set(-1);
     }).handleInterrupt(intaker::stopMotor);
   }
 

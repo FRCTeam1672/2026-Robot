@@ -13,7 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Outtake-Fuel"
+            "name": "Shoot-Corner"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop-All"
           }
         }
       ]

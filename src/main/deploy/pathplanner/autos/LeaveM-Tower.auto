@@ -13,7 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Outtake-Fuel"
+            "name": "Shoot-Tower"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 7.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop-All"
           }
         }
       ]

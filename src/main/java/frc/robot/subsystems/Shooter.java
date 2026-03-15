@@ -28,50 +28,63 @@ public class Shooter extends SubsystemBase {
     config.smartCurrentLimit(40);
     top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    //lower currentLimit 550
     config.smartCurrentLimit(20);
     index.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     hopper.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
   }
   
-  public Command shootTower() {
+  public Command reverseAgitator() {
     return Commands.run(() -> {
-      top.set(-0.7);
-      bottom.set
-      (0.7);
-      index.set(-.5);
-      hopper.set(-1); // or -1 depending on how the motor is oriented
+      top.set(0);
+      bottom.set(0);
+      index.set(0);
+      hopper.set(0.5); // or -1 depending on how the motor is oriented
     })
+    .handleInterrupt(this::stopAll);
+  }
+
+  public Command shootTower() {
+    return Commands.sequence(
+      reverseAgitator().withTimeout(5),
+      Commands.run(() -> {
+        top.set(-0.65);
+        bottom.set(0.65);
+        index.set(-1);
+        hopper.set(-0.5); // or -1 depending on how the motor is oriented
+      }).withTimeout(5)
+    )
+    .repeatedly()
     .handleInterrupt(this::stopAll);
   }
 
   public Command shootHub() {
-    return Commands.run(() -> {
-      top.set(-0.5);
-      bottom.set(0.5);
-      index.set(-1);
-      hopper.set(-.5);
-    })
+    return Commands.sequence(
+      reverseAgitator().withTimeout(5),
+      Commands.run(() -> {
+        top.set(-0.4);
+        bottom.set(0.4);
+        index.set(-1);
+        hopper.set(-0.5);
+    }).withTimeout(5)
+    )
+    .repeatedly()
     .handleInterrupt(this::stopAll);
   }
 
   public Command shootCorner() {
-    return Commands.run(() -> {
+    return Commands.sequence(
+    reverseAgitator().withTimeout(5),
+    Commands.run(() -> {
       top.set(-.85);
       bottom.set(0.85);
       index.set(-1);
-      hopper.set(-.5);
-    })
-    .handleInterrupt(this::stopAll);
-  }
-
-  public Command shooterTowerv2(){
-    return Commands.run(() -> {
-      top.set(-0.65);
-      bottom.set(0.65);
-      index.set(-.5);
-      hopper.set(-1); 
-    })
+      hopper.set(-0.5);
+    }).withTimeout(5)
+    )
+    .repeatedly()
     .handleInterrupt(this::stopAll);
   }
 
@@ -91,6 +104,15 @@ public class Shooter extends SubsystemBase {
     top.stopMotor();
     bottom.stopMotor();
     hopper.stopMotor();
+  }
+
+  public Command stopCommand() {
+    return Commands.run(() -> {
+      index.stopMotor();
+      top.stopMotor();
+      bottom.stopMotor();
+      hopper.stopMotor();
+    });
   }
 
   @Override
