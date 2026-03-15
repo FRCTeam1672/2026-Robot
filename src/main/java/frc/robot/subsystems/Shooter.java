@@ -88,6 +88,17 @@ public class Shooter extends SubsystemBase {
     .handleInterrupt(this::stopAll);
   }
 
+  public Command shooterTowerv3(){
+    return Commands.run(() -> {
+      top.set(-0.6);
+      bottom.set(0.6);
+      index.set(-.5);
+      hopper.set(-1); 
+    })
+    .handleInterrupt(this::stopAll);
+  }
+
+
   public void stopAll() {
     index.stopMotor();
     top.stopMotor();
