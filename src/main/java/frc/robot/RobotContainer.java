@@ -233,8 +233,6 @@ public class RobotContainer
       //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
-      oppsPS5.povUp().whileTrue(shooter.shooterTowerv2());
-      oppsPS5.povDown().whileTrue(shooter.shooterTowerv3());
     
 
   }

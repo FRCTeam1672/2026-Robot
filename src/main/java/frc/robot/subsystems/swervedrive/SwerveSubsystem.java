@@ -67,7 +67,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * PhotonVision class to keep an accurate odometry.
    */
-  private       VisionSubsystem      vision;
+  private BadVision vision;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -133,7 +133,9 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public void setupPhotonVision()
   {
-    vision = new VisionSubsystem(swerveDrive, swerveDrive.field);
+    vision = new BadVision(
+        () -> swerveDrive.getPose(),
+        swerveDrive.field);
   }
 
   @Override
@@ -144,8 +146,8 @@ public class SwerveSubsystem extends SubsystemBase
     {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
-      vision.updatePoseEstimation(swerveDrive);
     }
+    System.out.println("Robot pose: " + getPose());
   }
 
   @Override

@@ -320,7 +320,7 @@ public class BadVision
     {
       if (!c.resultsList.isEmpty())
       {
-        PhotonPipelineResult latest = c.resultsList.get(0);
+        PhotonPipelineResult latest = c.resultsList.get(c.resultsList.size() - 1);
         if (latest.hasTargets())
         {
           targets.addAll(latest.targets);
@@ -350,11 +350,12 @@ public class BadVision
      * Left Camera
      */
     BACKWARDS("1672_Camera2",
-             new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)),
-             new Translation3d(Units.inchesToMeters(-11),
-                               Units.inchesToMeters(-3.3),
-                               Units.inchesToMeters((25))),
-                               VecBuilder.fill(0,0,0), VecBuilder.fill(0,0,0)),
+    new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)),
+    new Translation3d(Units.inchesToMeters(-11),
+        Units.inchesToMeters(-3.3),
+        Units.inchesToMeters(25)),
+    VecBuilder.fill(0.9,0.9,0.9),
+    VecBuilder.fill(0.5,0.5,0.5)),
                                /**
      * Right Camera
      */
@@ -363,7 +364,7 @@ public class BadVision
               new Translation3d(Units.inchesToMeters(-11),
                                 Units.inchesToMeters(-2),
                                 Units.inchesToMeters(25)),
-              VecBuilder.fill(0,0,0), VecBuilder.fill(0,0,0));
+              VecBuilder.fill(0.9, 0.9, 0.9), VecBuilder.fill(0.5, 0.5, 0.5));
 
     /**
      * Latency alert to use when high latency is detected.
@@ -431,9 +432,10 @@ public class BadVision
       // https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html
       robotToCamTransform = new Transform3d(robotToCamTranslation, robotToCamRotation);
 
-      poseEstimator = new PhotonPoseEstimator(BadVision.fieldLayout,
-                                              PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                                              robotToCamTransform);
+    poseEstimator = new PhotonPoseEstimator(
+        BadVision.fieldLayout,
+        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+        robotToCamTransform);
       poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
       this.singleTagStdDevs = singleTagStdDevs;
@@ -557,16 +559,21 @@ public class BadVision
      * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets used for
      * estimation.
      */
-    private void updateEstimatedGlobalPose()
-    {
-      Optional<EstimatedRobotPose> visionEst = Optional.empty();
-      for (var change : resultsList)
-      {
-        visionEst = poseEstimator.update(change);
-        updateEstimationStdDevs(visionEst, change.getTargets());
-      }
-      estimatedRobotPose = visionEst;
-    }
+private void updateEstimatedGlobalPose()
+{
+  if (resultsList.isEmpty())
+  {
+    estimatedRobotPose = Optional.empty();
+    return;
+  }
+
+  PhotonPipelineResult latest = resultsList.get(resultsList.size() - 1);
+  Optional<EstimatedRobotPose> visionEst = poseEstimator.update(latest);
+
+  updateEstimationStdDevs(visionEst, latest.getTargets());
+
+  estimatedRobotPose = visionEst;
+}
 
     /**
      * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard deviations based
