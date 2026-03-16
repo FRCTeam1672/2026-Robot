@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants.ShootCycle.*;
+
 public class Shooter extends SubsystemBase {
   private final SparkMax top = new SparkMax(25, MotorType.kBrushless);
   private final SparkMax bottom = new SparkMax(24, MotorType.kBrushless);
@@ -48,13 +50,13 @@ public class Shooter extends SubsystemBase {
 
   public Command shootTower() {
     return Commands.sequence(
-      reverseAgitator().withTimeout(5),
+      reverseAgitator().withTimeout(outTime),
       Commands.run(() -> {
         top.set(-0.65);
         bottom.set(0.65);
         index.set(-1);
         hopper.set(-0.5); // or -1 depending on how the motor is oriented
-      }).withTimeout(5)
+      }).withTimeout(inTime)
     )
     .repeatedly()
     .handleInterrupt(this::stopAll);
@@ -62,13 +64,13 @@ public class Shooter extends SubsystemBase {
 
   public Command shootHub() {
     return Commands.sequence(
-      reverseAgitator().withTimeout(5),
+      reverseAgitator().withTimeout(outTime),
       Commands.run(() -> {
         top.set(-0.4);
         bottom.set(0.4);
         index.set(-1);
         hopper.set(-0.5);
-    }).withTimeout(5)
+    }).withTimeout(inTime)
     )
     .repeatedly()
     .handleInterrupt(this::stopAll);
@@ -76,13 +78,13 @@ public class Shooter extends SubsystemBase {
 
   public Command shootCorner() {
     return Commands.sequence(
-    reverseAgitator().withTimeout(5),
+    reverseAgitator().withTimeout(outTime),
     Commands.run(() -> {
       top.set(-.85);
       bottom.set(0.85);
       index.set(-1);
       hopper.set(-0.5);
-    }).withTimeout(5)
+    }).withTimeout(inTime)
     )
     .repeatedly()
     .handleInterrupt(this::stopAll);
