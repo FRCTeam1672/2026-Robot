@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import frc.robot.Constants.ShootCycle.*;
 
@@ -43,20 +44,34 @@ public class Shooter extends SubsystemBase {
       top.set(0);
       bottom.set(0);
       index.set(0);
-      hopper.set(0.5); // or -1 depending on how the motor is oriented
+      hopper.set(1);
     })
     .handleInterrupt(this::stopAll);
   }
 
   public Command shootTower() {
     return Commands.sequence(
-      reverseAgitator().withTimeout(outTime),
+      reverseAgitator().withTimeout(Constants.outTime),
       Commands.run(() -> {
         top.set(-0.65);
         bottom.set(0.65);
         index.set(-1);
-        hopper.set(-0.5); // or -1 depending on how the motor is oriented
-      }).withTimeout(inTime)
+        hopper.set(-1);
+      }).withTimeout(Constants.inTime)
+    )
+    .repeatedly()
+    .handleInterrupt(this::stopAll);
+  }
+
+  public Command towerAuto() {
+    return Commands.sequence(
+      reverseAgitator().withTimeout(Constants.outTime),
+      Commands.run(() -> {
+        top.set(-0.65);
+        bottom.set(0.65);
+        index.set(-1);
+        hopper.set(-1);
+      }).withTimeout(Constants.inTime)
     )
     .repeatedly()
     .handleInterrupt(this::stopAll);
@@ -64,42 +79,45 @@ public class Shooter extends SubsystemBase {
 
   public Command shootHub() {
     return Commands.sequence(
-      reverseAgitator().withTimeout(outTime),
+      reverseAgitator().withTimeout(Constants.outTime),
       Commands.run(() -> {
-        top.set(-0.4);
-        bottom.set(0.4);
+        top.set(-0.5);
+        bottom.set(0.5);
         index.set(-1);
-        hopper.set(-0.5);
-    }).withTimeout(inTime)
+        hopper.set(-1);
+    }).withTimeout(Constants.inTime)
     )
     .repeatedly()
     .handleInterrupt(this::stopAll);
   }
 
-  public Command shootCorner() {
+  public Command shootTrench() {
     return Commands.sequence(
-    reverseAgitator().withTimeout(outTime),
+    reverseAgitator().withTimeout(Constants.outTime),
     Commands.run(() -> {
-      top.set(-.85);
-      bottom.set(0.85);
+      top.set(-.6);
+      bottom.set(0.6);
       index.set(-1);
-      hopper.set(-0.5);
-    }).withTimeout(inTime)
+      hopper.set(-1);
+    }).withTimeout(Constants.inTime)
     )
     .repeatedly()
     .handleInterrupt(this::stopAll);
   }
 
-  public Command shooterTowerv3(){
-    return Commands.run(() -> {
-      top.set(-0.6);
-      bottom.set(0.6);
-      index.set(-.5);
-      hopper.set(-1); 
-    })
+  public Command shootTrenchWall() {
+    return Commands.sequence(
+    reverseAgitator().withTimeout(Constants.outTime),
+    Commands.run(() -> {
+      top.set(-.72);
+      bottom.set(0.72);
+      index.set(-1);
+      hopper.set(-1);
+    }).withTimeout(Constants.inTime)
+    )
+    .repeatedly()
     .handleInterrupt(this::stopAll);
   }
-
 
   public void stopAll() {
     index.stopMotor();

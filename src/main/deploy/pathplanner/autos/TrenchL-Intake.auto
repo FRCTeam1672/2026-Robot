@@ -1,0 +1,93 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Trench-Left-Path1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot-Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Trench-Left-Path2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop-All"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveL-Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake-Down"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SweepC-Left-Path-2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake-Fuel"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SweepC-Left-Path-3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stop-All"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

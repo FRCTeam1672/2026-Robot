@@ -27,10 +27,12 @@ import static edu.wpi.first.units.Units.*;
 public final class Constants
 {
 
-  public static final double ROBOT_MASS = (85) * 0.453592; // 32lbs * kg per pound
+  public static final double ROBOT_MASS = (95) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
+  public static final double inTime = 3;
+  public static final double outTime = 0.75;
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
 //  public static final class AutonConstants
@@ -55,9 +57,9 @@ public final class Constants
   }
 
   public static class GroundPID{
-    public static final double GROUND_P = 0.25;
+    public static final double GROUND_P = 0.3;
     public static final double GROUND_I = 0.0;
-    public static final double GROUND_D = 0.05;
+    public static final double GROUND_D = 0.07;
   }
   
   public static class HomeConstants{

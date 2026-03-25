@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeaveM-Tower"
+            "pathName": "Trench-Left-Path1"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot-Tower"
+            "name": "Shoot-Trench"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 7.0
+            "pathName": "Trench-Left-Path2"
           }
         },
         {
@@ -27,11 +27,17 @@
           "data": {
             "name": "Stop-All"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveL-Left"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Leave on the Middle of the Field",
+  "folder": null,
   "choreoAuto": false
 }

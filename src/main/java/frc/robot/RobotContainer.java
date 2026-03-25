@@ -54,15 +54,13 @@ public class RobotContainer
   private final Shooter shooter = new Shooter();
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing selection of desired auto
   private final SendableChooser<Command> autoChooser;
-  
-  private boolean slowMode = false;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                                () -> driverPS5.getLeftY() * (slowMode ? -0.4 : -1),
-                                                                () -> driverPS5.getLeftX() * (slowMode ? -0.4 : -1))
+                                                                () -> driverPS5.getLeftY() * -1,
+                                                                () -> driverPS5.getLeftX() * -1)
                                                             .withControllerRotationAxis(() -> driverPS5.getRightX() * -1)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
@@ -128,12 +126,13 @@ public class RobotContainer
     
     //Create the NamedCommands that will be used in PathPlanner
     NamedCommands.registerCommand("Intake-Fuel", intake.intake());
-    NamedCommands.registerCommand("Shoot-Corner", shooter.shootCorner());
+    NamedCommands.registerCommand("Shoot-Trench", shooter.shootTrench());
     NamedCommands.registerCommand("Shoot-Hub", shooter.shootHub());
     NamedCommands.registerCommand("Shoot-Tower", shooter.shootTower());
     NamedCommands.registerCommand("Intake-Down", intake.intakeDown());
     NamedCommands.registerCommand("Intake-Home", intake.homeIntake());
     NamedCommands.registerCommand("Stop-All", intake.stop().andThen(shooter.stopCommand()));
+    
     
     
     //Have the autoChooser pull in all PathPlanner autos as options
@@ -213,8 +212,9 @@ public class RobotContainer
       //driverPS5.R1().whileTrue(shooter.shootHub());
       //driverPS5.L1().whileTrue(shooter.shootCorner());
       driverPS5.L2().whileTrue(intake.intake());
-      
-      driverPS5.circle().onTrue(slowMode());
+      driverPS5.R2().whileTrue(intake.reverse());
+      driverPS5.triangle().onTrue((intake.homeIntake()));
+      driverPS5.cross().onTrue((intake.intakeDown()));
       
       //driverPS5.triangle().onTrue((intake.homeIntake()));
       //driverPS5.cross().onTrue((intake.intakeDown()));
@@ -228,11 +228,12 @@ public class RobotContainer
       //oppsPS5.R2().whileTrue(intake.reverse());
 
       oppsPS5.R1().whileTrue(shooter.shootHub());
-      oppsPS5.L1().whileTrue(shooter.shootCorner());
+      oppsPS5.L1().whileTrue(shooter.shootTrenchWall());
       //oppsPS5.L2().whileTrue(intake.intake());
       //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
+      oppsPS5.circle().onTrue((shooter.reverseAgitator()));
     
 
   }
@@ -260,16 +261,5 @@ public class RobotContainer
   public Pose2d getPose()
   {
     return drivebase.getPose();
-  }
-
-  public Command slowMode()
-  {
-    return Commands.run(() -> {
-      slowMode = true;
-    }).handleInterrupt(() -> slowMode = false);
-  }
-
-  public boolean isSlowMode() {
-    return slowMode;
   }
 }

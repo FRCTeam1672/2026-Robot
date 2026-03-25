@@ -36,28 +36,27 @@ public class Intake extends SubsystemBase {
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);
     config.smartCurrentLimit(20);
-    driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intaker.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // hopefully this works this time
     config.smartCurrentLimit(40);
     config.idleMode(IdleMode.kCoast);
     config.closedLoop.pid(GROUND_P, GROUND_I, GROUND_D);
-    config.closedLoop.maxOutput(.3);
-    config.closedLoop.minOutput(-.3);
-    config.inverted(true);
+    config.closedLoop.maxOutput(.4);
+    config.closedLoop.minOutput(-.4);
+    config.inverted(false);
     driver.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public Command intake() {
     return Commands.run(() -> {
-      intaker.set(1);
+      intaker.set(-1);
     }).handleInterrupt(intaker::stopMotor);
   }
 
   public Command reverse() {
     return Commands.run(() -> {
-      intaker.set(-1);
+      intaker.set(1);
     }).handleInterrupt(intaker::stopMotor);
   }
 

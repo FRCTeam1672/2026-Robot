@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SweepA-Right-Path1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot-Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SweepA-Right-Path2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop-All"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveR-Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

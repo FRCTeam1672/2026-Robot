@@ -11,9 +11,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Trench-Left"
+            "name": "Intake-Down"
           }
         },
         {
@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Intake-Fuel-Left"
+                  "pathName": "SweepC-Left-Path-2"
                 }
               },
               {
@@ -36,21 +36,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Return-Right"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "SweepC-Left-Path-3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stop-All"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Return-Tower"
+            "pathName": "Return-Left"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Outtake-Fuel"
+            "name": "Shoot-Trench"
           }
         }
       ]
