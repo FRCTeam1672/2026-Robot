@@ -16,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import static frc.robot.Constants.HomeConstants.GROUND_INTAKE_HOME_POSITION;
 import static frc.robot.Constants.IntakeDownPosition.GROUND_INTAKE_DOWN_POSITION;
@@ -70,26 +71,28 @@ public class Intake extends SubsystemBase {
     return MathUtil.isNear(GROUND_INTAKE_HOME_POSITION, driver.getEncoder().getPosition(), .5);
   }
 
-  public Boolean isIntakeAtPosition() {
-    return MathUtil.isNear(groundintakePosition, driver.getEncoder().getPosition(), .5);
+  public Boolean isIntakeDown() {
+    return MathUtil.isNear(GROUND_INTAKE_DOWN_POSITION, driver.getEncoder().getPosition(), .5);
   }
 
   public Command homeIntake() {
     return Commands.runOnce(() -> {
       groundintakePosition = GROUND_INTAKE_HOME_POSITION;
-    }).andThen(Commands.waitUntil(this::isIntakeHomed));
+    }).andThen(Commands.waitUntil(this::isIntakeDown));
 
   }
 
   public Command intakeDown() {
-    return intakeTo(GROUND_INTAKE_DOWN_POSITION);
+    return Commands.runOnce(() -> {
+      groundintakePosition = GROUND_INTAKE_DOWN_POSITION;
+    }).andThen(Commands.waitUntil(this::isIntakeHomed));
   }
 
-  public Command intakeTo(double pos) {
-    return Commands.runOnce(() -> {
-      groundintakePosition = pos;
-    }).andThen(Commands.waitUntil(this::isIntakeAtPosition));
-  }
+  // public Command intakeTo(double pos) {
+  //   return Commands.runOnce(() -> {
+  //     groundintakePosition = pos;
+  //   }).andThen(Commands.waitUntil(this::isIntakeAtPosition));
+  // }  
 
   @Override
   public void periodic() {

@@ -234,6 +234,7 @@ public class RobotContainer
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
       oppsPS5.circle().onTrue((shooter.reverseAgitator()));
+      oppsPS5.R2().whileTrue(intake.reverse());
     
 
   }
