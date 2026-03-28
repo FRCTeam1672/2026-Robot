@@ -49,8 +49,19 @@ public class Shooter extends SubsystemBase {
     .handleInterrupt(this::stopAll);
   }
 
+  public Command rampUp() {
+    return Commands.run(() -> {
+      top.set(-0.5);
+      bottom.set(0.5);
+      index.set(0);
+      hopper.set(0);
+    })
+    .handleInterrupt(this::stopAll);
+  }
+
   public Command shootTower() {
     return Commands.sequence(
+      rampUp().withTimeout(Constants.rampTime),
       reverseAgitator().withTimeout(Constants.outTime),
       Commands.run(() -> {
         top.set(-0.65);
@@ -65,7 +76,8 @@ public class Shooter extends SubsystemBase {
 
   public Command towerAuto() {
     return Commands.sequence(
-      reverseAgitator().withTimeout(Constants.outTime),
+    rampUp().withTimeout(Constants.rampTime),
+    reverseAgitator().withTimeout(Constants.outTime),
       Commands.run(() -> {
         top.set(-0.65);
         bottom.set(0.65);
@@ -79,6 +91,7 @@ public class Shooter extends SubsystemBase {
 
   public Command shootHub() {
     return Commands.sequence(
+      rampUp().withTimeout(Constants.rampTime),
       reverseAgitator().withTimeout(Constants.outTime),
       Commands.run(() -> {
         top.set(-0.5);
@@ -93,6 +106,7 @@ public class Shooter extends SubsystemBase {
 
   public Command shootTrench() {
     return Commands.sequence(
+    rampUp().withTimeout(Constants.rampTime),
     reverseAgitator().withTimeout(Constants.outTime),
     Commands.run(() -> {
       top.set(-.6);
@@ -107,6 +121,7 @@ public class Shooter extends SubsystemBase {
 
   public Command shootTrenchWall() {
     return Commands.sequence(
+    rampUp().withTimeout(Constants.rampTime),
     reverseAgitator().withTimeout(Constants.outTime),
     Commands.run(() -> {
       top.set(-.72);
