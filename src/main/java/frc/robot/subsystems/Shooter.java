@@ -41,97 +41,92 @@ public class Shooter extends SubsystemBase {
   
   public Command reverseAgitator() {
     return Commands.run(() -> {
-      top.set(0);
-      bottom.set(0);
+      top.set(-0.6);
+      bottom.set(0.6);
       index.set(0);
       hopper.set(1);
     })
     .handleInterrupt(this::stopAll);
   }
 
-  public Command rampUp() {
-    return Commands.run(() -> {
-      top.set(-0.5);
-      bottom.set(0.5);
-      index.set(0);
-      hopper.set(0);
-    })
-    .handleInterrupt(this::stopAll);
-  }
-
   public Command shootTower() {
-    return Commands.sequence(
-      rampUp().withTimeout(Constants.rampTime),
-      reverseAgitator().withTimeout(Constants.outTime),
-      Commands.run(() -> {
-        top.set(-0.65);
-        bottom.set(0.65);
-        index.set(-1);
-        hopper.set(-1);
-      }).withTimeout(Constants.inTime)
-    )
-    .repeatedly()
-    .handleInterrupt(this::stopAll);
+    return reverseAgitator().withTimeout(Constants.rampTime)
+      .andThen(
+        Commands.sequence(
+          Commands.run(() -> {
+            top.set(-0.65);
+            bottom.set(0.65);
+            index.set(-1);
+            hopper.set(-1);
+          }).withTimeout(Constants.inTime),
+          reverseAgitator().withTimeout(Constants.outTime)
+        ).repeatedly()
+      )
+      .handleInterrupt(this::stopAll);
   }
 
   public Command towerAuto() {
-    return Commands.sequence(
-    rampUp().withTimeout(Constants.rampTime),
-    reverseAgitator().withTimeout(Constants.outTime),
-      Commands.run(() -> {
-        top.set(-0.65);
-        bottom.set(0.65);
-        index.set(-1);
-        hopper.set(-1);
-      }).withTimeout(Constants.inTime)
-    )
-    .repeatedly()
-    .handleInterrupt(this::stopAll);
+    return reverseAgitator().withTimeout(Constants.rampTime)
+      .andThen(
+        Commands.sequence(
+          Commands.run(() -> {
+            top.set(-0.65);
+            bottom.set(0.65);
+            index.set(-1);
+            hopper.set(-1);
+          }).withTimeout(Constants.inTime),
+          reverseAgitator().withTimeout(Constants.outTime)
+        ).repeatedly()
+      )
+      .handleInterrupt(this::stopAll);
   }
 
   public Command shootHub() {
-    return Commands.sequence(
-      rampUp().withTimeout(Constants.rampTime),
-      reverseAgitator().withTimeout(Constants.outTime),
-      Commands.run(() -> {
-        top.set(-0.5);
-        bottom.set(0.5);
-        index.set(-1);
-        hopper.set(-1);
-    }).withTimeout(Constants.inTime)
-    )
-    .repeatedly()
-    .handleInterrupt(this::stopAll);
+    return reverseAgitator().withTimeout(Constants.rampTime)
+      .andThen(
+        Commands.sequence(
+          Commands.run(() -> {
+            top.set(-0.5);
+            bottom.set(0.5);
+            index.set(-1);
+            hopper.set(-1);
+          }).withTimeout(Constants.inTime),
+          reverseAgitator().withTimeout(Constants.outTime)
+        ).repeatedly()
+      )
+      .handleInterrupt(this::stopAll);
   }
 
   public Command shootTrench() {
-    return Commands.sequence(
-    rampUp().withTimeout(Constants.rampTime),
-    reverseAgitator().withTimeout(Constants.outTime),
-    Commands.run(() -> {
-      top.set(-.6);
-      bottom.set(0.6);
-      index.set(-1);
-      hopper.set(-1);
-    }).withTimeout(Constants.inTime)
-    )
-    .repeatedly()
-    .handleInterrupt(this::stopAll);
+    return reverseAgitator().withTimeout(Constants.rampTime)
+      .andThen(
+        Commands.sequence(
+          Commands.run(() -> {
+            top.set(-0.6);
+            bottom.set(0.6);
+            index.set(-1);
+            hopper.set(-1);
+          }).withTimeout(Constants.inTime),
+          reverseAgitator().withTimeout(Constants.outTime)
+        ).repeatedly()
+      )
+      .handleInterrupt(this::stopAll);
   }
 
   public Command shootTrenchWall() {
-    return Commands.sequence(
-    rampUp().withTimeout(Constants.rampTime),
-    reverseAgitator().withTimeout(Constants.outTime),
-    Commands.run(() -> {
-      top.set(-.72);
-      bottom.set(0.72);
-      index.set(-1);
-      hopper.set(-1);
-    }).withTimeout(Constants.inTime)
-    )
-    .repeatedly()
-    .handleInterrupt(this::stopAll);
+   return reverseAgitator().withTimeout(Constants.rampTime)
+      .andThen(
+        Commands.sequence(
+          Commands.run(() -> {
+            top.set(-0.72);
+            bottom.set(0.72);
+            index.set(-1);
+            hopper.set(-1);
+          }).withTimeout(Constants.inTime),
+          reverseAgitator().withTimeout(Constants.outTime)
+        ).repeatedly()
+      )
+      .handleInterrupt(this::stopAll);
   }
 
   public void stopAll() {
