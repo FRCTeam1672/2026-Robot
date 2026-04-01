@@ -11,18 +11,21 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-import frc.robot.Constants.ShootCycle.*;
+import frc.robot.Constants.ShootCycle;
 
 public class Shooter extends SubsystemBase {
   private final SparkMax top = new SparkMax(25, MotorType.kBrushless);
   private final SparkMax bottom = new SparkMax(24, MotorType.kBrushless);
   private final SparkMax index = new SparkMax(23, MotorType.kBrushless);
   private final SparkMax hopper = new SparkMax(26, MotorType.kBrushless);
+  SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.12, 0.0021); 
   
   /** Creates a new Shooter. */
   public Shooter() {
@@ -39,91 +42,84 @@ public class Shooter extends SubsystemBase {
   
   }
   
-  public Command reverseAgitator() {
+  public Command rampUp() {
     return Commands.run(() -> {
-      top.set(-0.6);
-      bottom.set(0.6);
-      index.set(0);
-      hopper.set(1);
+      top.set(0.5);
+      bottom.setVoltage(m_feedforward.calculate(0.5 * 5676));
     })
     .handleInterrupt(this::stopAll);
   }
 
   public Command shootTower() {
-    return reverseAgitator().withTimeout(Constants.rampTime)
+    return rampUp().withTimeout(ShootCycle.rampTime)
       .andThen(
         Commands.sequence(
           Commands.run(() -> {
-            top.set(-0.65);
-            bottom.set(0.65);
+            top.set(1);
+            bottom.setVoltage(m_feedforward.calculate(0.65 * 5676));
             index.set(-1);
             hopper.set(-1);
-          }).withTimeout(Constants.inTime),
-          reverseAgitator().withTimeout(Constants.outTime)
+          }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
       )
       .handleInterrupt(this::stopAll);
   }
 
   public Command towerAuto() {
-    return reverseAgitator().withTimeout(Constants.rampTime)
+    return rampUp().withTimeout(ShootCycle.rampTime)
       .andThen(
         Commands.sequence(
           Commands.run(() -> {
-            top.set(-0.65);
-            bottom.set(0.65);
+            top.set(1);
+            bottom.setVoltage(m_feedforward.calculate(0.65 * 5676));
             index.set(-1);
             hopper.set(-1);
-          }).withTimeout(Constants.inTime),
-          reverseAgitator().withTimeout(Constants.outTime)
+          }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
       )
       .handleInterrupt(this::stopAll);
   }
 
   public Command shootHub() {
-    return reverseAgitator().withTimeout(Constants.rampTime)
+    return rampUp().withTimeout(ShootCycle.rampTime)
       .andThen(
         Commands.sequence(
           Commands.run(() -> {
-            top.set(-0.5);
-            bottom.set(0.5);
+            top.set(1);
+            bottom.setVoltage(m_feedforward.calculate(0.5 * 5676));
             index.set(-1);
             hopper.set(-1);
-          }).withTimeout(Constants.inTime),
-          reverseAgitator().withTimeout(Constants.outTime)
+          }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
       )
       .handleInterrupt(this::stopAll);
   }
 
   public Command shootTrench() {
-    return reverseAgitator().withTimeout(Constants.rampTime)
+    return rampUp().withTimeout(ShootCycle.rampTime)
       .andThen(
         Commands.sequence(
           Commands.run(() -> {
-            top.set(-0.6);
-            bottom.set(0.6);
+            top.set(1);
+            bottom.setVoltage(m_feedforward.calculate(0.6 * 5676));
             index.set(-1);
             hopper.set(-1);
-          }).withTimeout(Constants.inTime),
-          reverseAgitator().withTimeout(Constants.outTime)
+          }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
       )
       .handleInterrupt(this::stopAll);
   }
 
   public Command shootTrenchWall() {
-   return reverseAgitator().withTimeout(Constants.rampTime)
+   return rampUp().withTimeout(ShootCycle.rampTime)
       .andThen(
         Commands.sequence(
           Commands.run(() -> {
-            top.set(-0.72);
-            bottom.set(0.72);
+            top.set(1);
+            bottom.setVoltage(m_feedforward.calculate(0.72 * 5676));
             index.set(-1);
             hopper.set(-1);
-          }).withTimeout(Constants.inTime),
-          reverseAgitator().withTimeout(Constants.outTime)
+          }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
       )
       .handleInterrupt(this::stopAll);
@@ -148,5 +144,6 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Bottom RPM", bottom.getEncoder().getVelocity());
   }
 }
