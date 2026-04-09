@@ -216,25 +216,13 @@ public class RobotContainer
       driverPS5.triangle().onTrue((intake.homeIntake()));
       driverPS5.cross().onTrue((intake.intakeDown()));
       
-      //driverPS5.triangle().onTrue((intake.homeIntake()));
-      //driverPS5.cross().onTrue((intake.intakeDown()));
-
-      //opps
-      //oppsPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
-      //oppsPS5.options().onTrue((Commands.runOnce(drivebase::zeroGyro)));
-     
       
       oppsPS5.R2().whileTrue(shooter.shootTower());
-      //oppsPS5.R2().whileTrue(intake.reverse());
-
       oppsPS5.R1().whileTrue(shooter.shootHub());
       oppsPS5.L1().whileTrue(shooter.shootTrenchWall());
-      //oppsPS5.L2().whileTrue(intake.intake());
-      //driverPS5.L1().onTrue(Commands.runOnce(intake::stop));
+      oppsPS5.L2().whileTrue(shooter.rampUp());
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
-      oppsPS5.circle().onTrue((shooter.reverseAgitator()));
-      oppsPS5.R2().whileTrue(intake.reverse());
     
 
   }

@@ -24,7 +24,7 @@ public class Shooter extends SubsystemBase {
   private final SparkMax top = new SparkMax(25, MotorType.kBrushless);
   private final SparkMax bottom = new SparkMax(24, MotorType.kBrushless);
   private final SparkMax index = new SparkMax(23, MotorType.kBrushless);
-  private final SparkMax hopper = new SparkMax(26, MotorType.kBrushless);
+  private final SparkMax agitator = new SparkMax(26, MotorType.kBrushless);
   SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.12, 0.0021); 
   
   /** Creates a new Shooter. */
@@ -38,90 +38,75 @@ public class Shooter extends SubsystemBase {
     //lower currentLimit 550
     config.smartCurrentLimit(20);
     index.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    hopper.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    agitator.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   
   }
   
   public Command rampUp() {
     return Commands.run(() -> {
       top.set(0.5);
-      bottom.setVoltage(m_feedforward.calculate(0.5 * 5676));
+      bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
     })
     .handleInterrupt(this::stopAll);
   }
 
   public Command shootTower() {
-    return rampUp().withTimeout(ShootCycle.rampTime)
-      .andThen(
-        Commands.sequence(
+    return Commands.sequence(
           Commands.run(() -> {
             top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.65 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
             index.set(-1);
-            hopper.set(-1);
+            agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
-      )
       .handleInterrupt(this::stopAll);
   }
 
   public Command towerAuto() {
-    return rampUp().withTimeout(ShootCycle.rampTime)
-      .andThen(
-        Commands.sequence(
+    return Commands.sequence(
           Commands.run(() -> {
             top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.65 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
             index.set(-1);
-            hopper.set(-1);
+            agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
-      )
       .handleInterrupt(this::stopAll);
   }
 
   public Command shootHub() {
-    return rampUp().withTimeout(ShootCycle.rampTime)
-      .andThen(
-        Commands.sequence(
+    return Commands.sequence(
           Commands.run(() -> {
             top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.5 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
             index.set(-1);
-            hopper.set(-1);
+            agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
-      )
       .handleInterrupt(this::stopAll);
   }
 
   public Command shootTrench() {
-    return rampUp().withTimeout(ShootCycle.rampTime)
-      .andThen(
-        Commands.sequence(
+    return Commands.sequence(
           Commands.run(() -> {
             top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.6 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
             index.set(-1);
-            hopper.set(-1);
+            agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
-      )
       .handleInterrupt(this::stopAll);
   }
 
   public Command shootTrenchWall() {
-   return rampUp().withTimeout(ShootCycle.rampTime)
-      .andThen(
-        Commands.sequence(
+   return Commands.sequence(
           Commands.run(() -> {
             top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.72 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
             index.set(-1);
-            hopper.set(-1);
+            agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
-      )
       .handleInterrupt(this::stopAll);
   }
 
@@ -129,7 +114,7 @@ public class Shooter extends SubsystemBase {
     index.stopMotor();
     top.stopMotor();
     bottom.stopMotor();
-    hopper.stopMotor();
+    agitator.stopMotor();
   }
 
   public Command stopCommand() {
@@ -137,7 +122,7 @@ public class Shooter extends SubsystemBase {
       index.stopMotor();
       top.stopMotor();
       bottom.stopMotor();
-      hopper.stopMotor();
+      agitator.stopMotor();
     });
   }
 
