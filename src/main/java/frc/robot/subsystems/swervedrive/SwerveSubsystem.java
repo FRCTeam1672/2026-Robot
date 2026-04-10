@@ -156,7 +156,6 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Setup AutoBuilder for PathPlanner.
    */
-  @SuppressWarnings("removal")
   public void setupPathPlanner()
   {
     // Load the RobotConfig from the GUI settings. You should probably

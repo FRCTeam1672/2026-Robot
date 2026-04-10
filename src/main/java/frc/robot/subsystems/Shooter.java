@@ -19,11 +19,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShootCycle;
 
 public class Shooter extends SubsystemBase {
-  private final SparkMax top = new SparkMax(25, MotorType.kBrushless);
-  private final SparkMax bottom = new SparkMax(24, MotorType.kBrushless);
+  private final SparkMax top = new SparkMax(24, MotorType.kBrushless);
+  private final SparkMax bottom = new SparkMax(25, MotorType.kBrushless);
   private final SparkMax index = new SparkMax(23, MotorType.kBrushless);
   private final SparkMax agitator = new SparkMax(26, MotorType.kBrushless);
   SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.12, 0.0021); 
+
   
   /** Creates a new Shooter. */
   @SuppressWarnings("removal")
@@ -31,7 +32,9 @@ public class Shooter extends SubsystemBase {
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kCoast);
     config.smartCurrentLimit(40);
+    config.inverted(true);
     top.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    config.inverted(false);
     bottom.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     //lower currentLimit 550
@@ -43,8 +46,8 @@ public class Shooter extends SubsystemBase {
   
   public Command rampUp() {
     return Commands.run(() -> {
-      top.set(0.5);
-      bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
+      bottom.setVoltage(m_feedforward.calculate(0.25 * 5676));
+      top.setVoltage(m_feedforward.calculate(0));
     })
     .handleInterrupt(this::stopAll);
   }
@@ -52,8 +55,8 @@ public class Shooter extends SubsystemBase {
   public Command shootTower() {
     return Commands.sequence(
           Commands.run(() -> {
-            top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
+            top.setVoltage(m_feedforward.calculate(.75*5676));
+            bottom.setVoltage(m_feedforward.calculate(0.21 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
@@ -64,8 +67,8 @@ public class Shooter extends SubsystemBase {
   public Command towerAuto() {
     return Commands.sequence(
           Commands.run(() -> {
-            top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
+            top.set(.75);
+            bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
@@ -76,8 +79,8 @@ public class Shooter extends SubsystemBase {
   public Command shootHub() {
     return Commands.sequence(
           Commands.run(() -> {
-            top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
+            top.setVoltage(m_feedforward.calculate(0*5676));
+            bottom.setVoltage(m_feedforward.calculate(0.13 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
@@ -88,8 +91,8 @@ public class Shooter extends SubsystemBase {
   public Command shootTrench() {
     return Commands.sequence(
           Commands.run(() -> {
-            top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
+            top.set(.75);
+            bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
@@ -100,8 +103,20 @@ public class Shooter extends SubsystemBase {
   public Command shootTrenchWall() {
    return Commands.sequence(
           Commands.run(() -> {
-            top.set(1);
-            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
+            top.set(.75);
+            bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
+            index.set(-1);
+            agitator.set(1);
+          }).withTimeout(ShootCycle.inTime)
+        ).repeatedly()
+      .handleInterrupt(this::stopAll);
+  }
+
+  public Command shootCorner() {
+   return Commands.sequence(
+          Commands.run(() -> {
+            top.set(.9);
+            bottom.setVoltage(m_feedforward.calculate(0.4 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
@@ -129,5 +144,6 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Bottom RPM", bottom.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Top RPM", top.getEncoder().getVelocity());
   }
 }

@@ -213,8 +213,9 @@ public class RobotContainer
       
       oppsPS5.L1().whileTrue(shooter.shootTrenchWall());
       oppsPS5.R1().whileTrue(shooter.shootHub());
-      oppsPS5.L2().whileTrue(shooter.rampUp());
+      oppsPS5.L2().whileTrue(shooter.shootCorner());
       oppsPS5.R2().whileTrue(shooter.shootTower());
+      oppsPS5.square().whileTrue(shooter.rampUp());
       
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
