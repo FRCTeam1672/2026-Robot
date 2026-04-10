@@ -17,8 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import static frc.robot.Constants.HomeConstants.GROUND_INTAKE_HOME_POSITION;
 import static frc.robot.Constants.IntakeDownPosition.GROUND_INTAKE_DOWN_POSITION;
 import static frc.robot.Constants.GroundPID.GROUND_P;
@@ -34,6 +32,7 @@ public class Intake extends SubsystemBase {
   private double groundintakePosition = GROUND_INTAKE_HOME_POSITION;
 
   /** Creates a new Indexer. */
+  @SuppressWarnings("removal")
   public Intake() {
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kBrake);

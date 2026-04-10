@@ -28,8 +28,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
-import static edu.wpi.first.units.Units.Newton;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -158,14 +156,14 @@ public class RobotContainer
    */
   private void configureBindings() throws FileVersionException, IOException, ParseException
   {
-    Command driveFieldOrientedDirectAngle      = drivebase.driveFieldOriented(driveDirectAngle);
+    drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    Command driveRobotOrientedAngularVelocity  = drivebase.driveFieldOriented(driveRobotOriented);
-    Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(
+    drivebase.driveFieldOriented(driveRobotOriented);
+    drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngle);
     Command driveFieldOrientedDirectAngleKeyboard      = drivebase.driveFieldOriented(driveDirectAngleKeyboard);
-    Command driveFieldOrientedAnglularVelocityKeyboard = drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
-    Command driveSetpointGenKeyboard = drivebase.driveWithSetpointGeneratorFieldRelative(
+    drivebase.driveFieldOriented(driveAngularVelocityKeyboard);
+    drivebase.driveWithSetpointGeneratorFieldRelative(
         driveDirectAngleKeyboard);
 
     if (RobotBase.isSimulation())
@@ -205,26 +203,22 @@ public class RobotContainer
     }
       driverPS5.create().onTrue((Commands.runOnce(drivebase::zeroGyroWithAlliance)));
       driverPS5.options().onTrue(Commands.runOnce(drivebase::zeroGyro));
-      
-      //driverPS5.options().whileTrue(Commands.runOnce(drivebase::lock, drivebase).repeatedly());
-      
-      //driverPS5.R2().whileTrue(shooter.shootTower());
-      //driverPS5.R1().whileTrue(shooter.shootHub());
-      //driverPS5.L1().whileTrue(shooter.shootCorner());
+
       driverPS5.L2().whileTrue(intake.intake());
       driverPS5.R2().whileTrue(intake.reverse());
+      
       driverPS5.triangle().onTrue((intake.homeIntake()));
       driverPS5.cross().onTrue((intake.intakeDown()));
       
       
-      oppsPS5.R2().whileTrue(shooter.shootTower());
-      oppsPS5.R1().whileTrue(shooter.shootHub());
       oppsPS5.L1().whileTrue(shooter.shootTrenchWall());
+      oppsPS5.R1().whileTrue(shooter.shootHub());
       oppsPS5.L2().whileTrue(shooter.rampUp());
+      oppsPS5.R2().whileTrue(shooter.shootTower());
+      
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
     
-
   }
 
   /**

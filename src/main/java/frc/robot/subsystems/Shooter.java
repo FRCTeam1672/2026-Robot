@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-
 import frc.robot.Constants.ShootCycle;
 
 public class Shooter extends SubsystemBase {
@@ -28,6 +26,7 @@ public class Shooter extends SubsystemBase {
   SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(0.12, 0.0021); 
   
   /** Creates a new Shooter. */
+  @SuppressWarnings("removal")
   public Shooter() {
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(IdleMode.kCoast);

@@ -9,9 +9,7 @@ import static edu.wpi.first.units.Units.Meter;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
@@ -158,6 +156,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Setup AutoBuilder for PathPlanner.
    */
+  @SuppressWarnings("removal")
   public void setupPathPlanner()
   {
     // Load the RobotConfig from the GUI settings. You should probably

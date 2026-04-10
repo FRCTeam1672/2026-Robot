@@ -22,7 +22,6 @@ import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import java.awt.Desktop;
 import java.util.ArrayList;
@@ -56,17 +55,9 @@ public class BadVision
   public static final AprilTagFieldLayout fieldLayout                     = AprilTagFieldLayout.loadField(
       AprilTagFields.k2026RebuiltWelded);
   /**
-   * Ambiguity defined as a value between (0,1). Used in {@link BadVision#filterPose}.
-   */
-  private final       double              maximumAmbiguity                = 0.25;
-  /**
    * Photon Vision Simulation
    */
   public              VisionSystemSim     visionSim;
-  /**
-   * Count of times that the odom thinks we're more than 10meters away from the april tag.
-   */
-  private             double              longDistangePoseEstimationCount = 0;
   /**
    * Current pose from the pose estimator using wheel odometry.
    */
@@ -75,10 +66,6 @@ public class BadVision
    * Field from {@link swervelib.SwerveDrive#field}
    */
   private             Field2d             field2d;
-
-  private Field2d testField = new Field2d();
-
-
 
   /**
    * Constructor for the Vision class.
@@ -150,13 +137,11 @@ public class BadVision
       if (poseEst.isPresent())
       {
         var pose = poseEst.get();
+  // if(camera.name().equals("FORWARDS")) {
+  //         testField.setRobotPose(pose.estimatedPose.toPose2d());
+  //         SmartDashboard.putData("test/testfield", testField);
 
-        if(camera.name().equals("FORWARDS")) {
-          testField.setRobotPose(pose.estimatedPose.toPose2d());
-          SmartDashboard.putData("test/testfield", testField);
-
-        }
-
+  //       }
         swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
                                          pose.timestampSeconds,
                                          camera.curStdDevs);
@@ -191,53 +176,6 @@ public class BadVision
           });
     }
     return poseEst;
-  }
-
-
-  /**
-   * Filter pose via the ambiguity and find best estimate between all of the camera's throwing out distances more than
-   * 10m for a short amount of time.
-   *
-   * @param pose Estimated robot pose.
-   * @return Could be empty if there isn't a good reading.
-   */
-  @Deprecated(since = "2024", forRemoval = true)
-  private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
-  {
-    if (pose.isPresent())
-    {
-      double bestTargetAmbiguity = 1; // 1 is max ambiguity
-      for (PhotonTrackedTarget target : pose.get().targetsUsed)
-      {
-        double ambiguity = target.getPoseAmbiguity();
-        if (ambiguity != -1 && ambiguity < bestTargetAmbiguity)
-        {
-          bestTargetAmbiguity = ambiguity;
-        }
-      }
-      //ambiguity to high dont use estimate
-      if (bestTargetAmbiguity > maximumAmbiguity)
-      {
-        return Optional.empty();
-      }
-
-      //est pose is very far from recorded robot pose
-      if (PhotonUtils.getDistanceToPose(currentPose.get(), pose.get().estimatedPose.toPose2d()) > 1)
-      {
-        longDistangePoseEstimationCount++;
-
-        //if it calculates that were 10 meter away for more than 10 times in a row its probably right
-        if (longDistangePoseEstimationCount < 10)
-        {
-          return Optional.empty();
-        }
-      } else
-      {
-        longDistangePoseEstimationCount = 0;
-      }
-      return pose;
-    }
-    return Optional.empty();
   }
 
 
@@ -349,25 +287,25 @@ public class BadVision
     /**
      * Left Camera
      */
-    BACKWARDS("1672_Camera2",
-    new Rotation3d(0, Math.toRadians(0), Math.toRadians(180)),
+    BACK_LEFT("1672_Camera2",
+    new Rotation3d(0, Math.toRadians(0), Math.toRadians(225)),
     new Translation3d(Units.inchesToMeters(-11),
-        Units.inchesToMeters(-3.3),
+        Units.inchesToMeters(6),
         Units.inchesToMeters(25)),
-    VecBuilder.fill(0.9,0.9,0.9),
+    VecBuilder.fill(2,2,2),
     VecBuilder.fill(0.5,0.5,0.5)),
                                /**
      * Right Camera
      */
-    FORWARDS("1672_Camera1",
-              new Rotation3d(0, Math.toRadians(0), Math.toRadians(3)),
+    BACK_RIGHT("1672_Camera1",
+              new Rotation3d(0, Math.toRadians(0), Math.toRadians(135)),
               new Translation3d(Units.inchesToMeters(-11),
-                                Units.inchesToMeters(-2),
+                                Units.inchesToMeters(-6),
                                 Units.inchesToMeters(25)),
-              VecBuilder.fill(0.9, 0.9, 0.9), VecBuilder.fill(0.5, 0.5, 0.5));
+              VecBuilder.fill(2, 2, 2), VecBuilder.fill(0.5, 0.5, 0.5));
 
     /**
-     * Latency alert to use when high latency is detected.
+     * Latency alert to use when high ulatency is detected.
      */
     public final  Alert                        latencyAlert;
     /**
@@ -422,6 +360,7 @@ public class BadVision
      * @param singleTagStdDevs      Single AprilTag standard deviations of estimated poses from the camera.
      * @param multiTagStdDevsMatrix Multi AprilTag standard deviations of estimated poses from the camera.
      */
+    @SuppressWarnings("removal")
     Cameras(String name, Rotation3d robotToCamRotation, Translation3d robotToCamTranslation,
             Matrix<N3, N1> singleTagStdDevs, Matrix<N3, N1> multiTagStdDevsMatrix)
     {
@@ -568,11 +507,20 @@ private void updateEstimatedGlobalPose()
   }
 
   PhotonPipelineResult latest = resultsList.get(resultsList.size() - 1);
+  @SuppressWarnings("removal")
   Optional<EstimatedRobotPose> visionEst = poseEstimator.update(latest);
 
   updateEstimationStdDevs(visionEst, latest.getTargets());
 
   estimatedRobotPose = visionEst;
+  if (visionEst.isPresent()) {
+  double ambiguity = latest.getBestTarget().getPoseAmbiguity();
+
+  if (ambiguity > 0.3) {
+    estimatedRobotPose = Optional.empty();
+    return;
+  }
+}
 }
 
     /**
