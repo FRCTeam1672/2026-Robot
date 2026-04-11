@@ -19,12 +19,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.Elastic;
-import frc.robot.subsystems.Elastic.Notification;
+import frc.robot.util.Elastic;
+import frc.robot.util.Elastic.Notification;
 import swervelib.SwerveDrive;
 
 public class VisionSubsystem extends SubsystemBase {
-    private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+    private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
     private final PhotonCamera leftCam = new PhotonCamera("1672_Camera1");
     private final PhotonCamera rightCam = new PhotonCamera("1672_Camera2");
 

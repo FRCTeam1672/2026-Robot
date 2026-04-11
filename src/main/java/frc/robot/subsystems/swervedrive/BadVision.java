@@ -22,7 +22,6 @@ import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import java.awt.Desktop;
 import java.util.ArrayList;
@@ -75,10 +74,6 @@ public class BadVision
    * Field from {@link swervelib.SwerveDrive#field}
    */
   private             Field2d             field2d;
-
-  private Field2d testField = new Field2d();
-
-
 
   /**
    * Constructor for the Vision class.
@@ -151,11 +146,11 @@ public class BadVision
       {
         var pose = poseEst.get();
 
-        if(camera.name().equals("LEFT")) {
-          testField.setRobotPose(pose.estimatedPose.toPose2d());
-          SmartDashboard.putData("test/testfield", testField);
+        // if(camera.name().equals("RIGHT")) {
+        //   testField.setRobotPose(pose.estimatedPose.toPose2d());
+        //   SmartDashboard.putData("test/testfield", testField);
 
-        }
+        // }
 
         swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
                                          pose.timestampSeconds,
@@ -201,8 +196,8 @@ public class BadVision
    * @param pose Estimated robot pose.
    * @return Could be empty if there isn't a good reading.
    */
- 
   @SuppressWarnings("unused")
+  @Deprecated(since = "2024", forRemoval = true)
   private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
   {
     if (pose.isPresent())
@@ -348,7 +343,7 @@ public class BadVision
   enum Cameras
   {
     /**
-     * RIGHT Camera
+     * Left Camera
      */
     RIGHT("1672_Camera2",
              new Rotation3d(0, Math.toRadians(0), Math.toRadians(225)),
@@ -357,7 +352,7 @@ public class BadVision
                                Units.inchesToMeters(8.5)),
                                VecBuilder.fill(0,0,0), VecBuilder.fill(0,0,0)),
                                /**
-     * LEFT Camera
+     * Right Camera
      */
     LEFT("1672_Camera1",
               new Rotation3d(0, Math.toRadians(0), Math.toRadians(135)),

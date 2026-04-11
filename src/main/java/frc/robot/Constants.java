@@ -63,6 +63,7 @@ public final class Constants
   public static class IntakeDownPosition{
     public static final double GROUND_INTAKE_DOWN_POSITION = 30.0;
   }
+
   public static class OperatorConstants
   {
     // Joystick Deadband
