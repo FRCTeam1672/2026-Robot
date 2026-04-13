@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -277,6 +278,70 @@ public class BadVision
   }
 
   /**
+   * Get the hub center position on the field.
+   * The hub center is calculated as the average position of AprilTag 7.
+   *
+   * @return The (x, y) position of the hub center on the field.
+   */
+  public static Translation2d getHubCenter()
+  {
+    Optional<Pose3d> aprilTag7Pose3d = fieldLayout.getTagPose(7);
+    if (aprilTag7Pose3d.isEmpty())
+    {
+      throw new RuntimeException("AprilTag 7 not found in field layout");
+    }
+    return aprilTag7Pose3d.get().getTranslation().toTranslation2d();
+  }
+
+  /**
+   * Calculate the target pose for the robot to position itself at a specific distance from the hub.
+   * Uses the robot's current global pose and trigonometry to determine the angle needed to face the hub.
+   *
+   * @param distanceFromHub Distance in meters from the hub center.
+   * @param sideOffset Lateral offset from the direct line to the hub center in meters.
+   *                   Positive = left side, Negative = right side (relative to facing the hub).
+   * @return The target pose on the field where the robot should position itself.
+   */
+  public Pose2d getHubAlignmentPose(double distanceFromHub, double sideOffset)
+  {
+    // Get the robot's current position from odometry
+    Pose2d robotPose = currentPose.get();
+    Translation2d hubCenter = getHubCenter();
+    
+    // Calculate vector from robot to hub center
+    Translation2d toHub = hubCenter.minus(robotPose.getTranslation());
+    double distanceToHub = toHub.getNorm();
+    
+    if (distanceToHub < 0.01)
+    {
+      // Robot is essentially at the hub center, can't determine angle
+      throw new RuntimeException("Robot is too close to hub center to calculate alignment angle");
+    }
+    
+    // Calculate the angle from robot to hub
+    double angleToHub = Math.atan2(toHub.getY(), toHub.getX());
+    
+    // Calculate the desired robot heading (facing toward the hub)
+    double desiredHeading = angleToHub;
+    
+    // Calculate the target position:
+    // Position should be 'distanceFromHub' away from the hub center,
+    // in the direction away from the hub (opposite of angleToHub)
+    // with optional lateral offset
+    double targetX = hubCenter.getX() - distanceFromHub * Math.cos(angleToHub) + sideOffset * Math.sin(angleToHub);
+    double targetY = hubCenter.getY() - distanceFromHub * Math.sin(angleToHub) - sideOffset * Math.cos(angleToHub);
+    
+    // Create the target pose
+    Pose2d targetPose = new Pose2d(
+        targetX,
+        targetY,
+        new Rotation2d(desiredHeading)
+    );
+    
+    return targetPose;
+  }
+
+  /**
    * Vision simulation.
    *
    * @return Vision Simulation
@@ -348,7 +413,7 @@ public class BadVision
     RIGHT("1672_Camera2",
              new Rotation3d(0, Math.toRadians(0), Math.toRadians(225)),
              new Translation3d(Units.inchesToMeters(-11),
-                               Units.inchesToMeters(-12),
+                               Units.inchesToMeters(-11),
                                Units.inchesToMeters(8.5)),
                                VecBuilder.fill(0,0,0), VecBuilder.fill(0,0,0)),
                                /**
@@ -357,7 +422,7 @@ public class BadVision
     LEFT("1672_Camera1",
               new Rotation3d(0, Math.toRadians(0), Math.toRadians(135)),
               new Translation3d(Units.inchesToMeters(11),
-                                Units.inchesToMeters(-12),
+                                Units.inchesToMeters(-11),
                                 Units.inchesToMeters(8.5)),
               VecBuilder.fill(0,0,0), VecBuilder.fill(0,0,0));
 

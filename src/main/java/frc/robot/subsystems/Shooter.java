@@ -88,17 +88,17 @@ public class Shooter extends SubsystemBase {
   //     .handleInterrupt(this::stopAll);
   // }
 
-  // // public Command shootTrench() {
-  // //   return Commands.sequence(
-  //         Commands.run(() -> {
-  //           top.set(.75);
-  //           bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
-  //           index.set(-1);
-  //           agitator.set(1);
-  //         }).withTimeout(ShootCycle.inTime)
-  //       ).repeatedly()
-  //     .handleInterrupt(this::stopAll);
-  // }
+  public Command shootTrench() {
+    return Commands.sequence(
+          Commands.run(() -> {
+            top.set(.8);
+            bottom.setVoltage(m_feedforward.calculate(0.2 * 5676));
+            index.set(-1);
+            agitator.set(1);
+          }).withTimeout(ShootCycle.inTime)
+        ).repeatedly()
+      .handleInterrupt(this::stopAll);
+  }
 
   public Command shootTrenchWall() {
    return Commands.sequence(

@@ -1,56 +1,60 @@
 package frc.robot.util;
 
+/**
+ * Represents the hub and its configuration for robot alignment.
+ * Uses global pose estimation to calculate alignment angles and positions.
+ * AprilTag 7 marks the hub location on the red alliance side, in the left trench, closer to the driver station.
+ */
 public class Hub {
-    public static HubAlignment fromSide(String side) {
-        side = side.toLowerCase();
-        return switch (side) {
-            case "a" -> new HubAlignment(HubOrientation.FRONT, HubSide.LEFT);
-            case "b" -> new HubAlignment(HubOrientation.FRONT, HubSide.RIGHT);
-            case "c" -> new HubAlignment(HubOrientation.FRONT_RIGHT, HubSide.LEFT);
-            case "d" -> new HubAlignment(HubOrientation.FRONT_RIGHT, HubSide.RIGHT);
-            case "e" -> new HubAlignment(HubOrientation.BACK_RIGHT, HubSide.LEFT);
-            case "f" -> new HubAlignment(HubOrientation.BACK_RIGHT, HubSide.RIGHT);
-            case "g" -> new HubAlignment(HubOrientation.BACK, HubSide.LEFT);
-            case "h" -> new HubAlignment(HubOrientation.BACK, HubSide.RIGHT);
-            case "k" -> new HubAlignment(HubOrientation.BACK_LEFT, HubSide.LEFT);
-            case "l" -> new HubAlignment(HubOrientation.BACK_LEFT, HubSide.RIGHT);
-            case "i" -> new HubAlignment(HubOrientation.FRONT_LEFT, HubSide.LEFT);
-            case "j" -> new HubAlignment(HubOrientation.FRONT_LEFT, HubSide.RIGHT);
-            default -> throw new IllegalArgumentException("Illegal side.");
-        };
+    /**
+     * AprilTag ID for the hub.
+     */
+    public static final int APRILTAG_ID = 7;
 
-    }
-}
+    /**
+     * Default distance from the hub center in meters.
+     */
+    public static final double DEFAULT_DISTANCE_METERS = 1.0;
 
-enum HubSide {
-    LEFT,
-    RIGHT
-}
-
-enum HubOrientation {
-
-    FRONT(0, 0),
-    FRONT_RIGHT(60, 60),
-    BACK_RIGHT (120, 120),
-    BACK (180, 180),
-    FRONT_LEFT (-120, 240),
-    BACK_LEFT (-60, 300),
-    ;
-
-
-    private final int robotRotation;
-    private final int HubRotation;
-    HubOrientation(int robotRotation, int HubRotation) {
-        this.robotRotation = robotRotation;
-        this.HubRotation = HubRotation;
+    /**
+     * Create a hub alignment configuration at a specific distance and lateral offset.
+     * Uses the robot's global pose to calculate the angle to face the hub.
+     *
+     * @param distance Distance in meters from the hub center.
+     * @param sideOffset Lateral offset from the direct line to the hub center in meters.
+     *                   Positive = left side, Negative = right side (relative to facing the hub).
+     * @return HubAlignment configuration.
+     */
+    public static HubAlignment createAlignment(double distance, double sideOffset) {
+        return new HubAlignment(distance, sideOffset);
     }
 
-    public int getRobotRotation() {
-        return robotRotation;
+    /**
+     * Create a default hub alignment (1 meter away, no lateral offset).
+     *
+     * @return HubAlignment configuration.
+     */
+    public static HubAlignment createDefaultAlignment() {
+        return createAlignment(DEFAULT_DISTANCE_METERS, 0.0);
     }
 
+    /**
+     * Create a left-side hub alignment (approach from the left).
+     *
+     * @param distance Distance in meters from the hub center.
+     * @return HubAlignment configuration.
+     */
+    public static HubAlignment createLeftAlignment(double distance) {
+        return createAlignment(distance, 0.5);  // 0.5m left offset
+    }
 
-    public int getHubRotation() {
-        return HubRotation;
+    /**
+     * Create a right-side hub alignment (approach from the right).
+     *
+     * @param distance Distance in meters from the hub center.
+     * @return HubAlignment configuration.
+     */
+    public static HubAlignment createRightAlignment(double distance) {
+        return createAlignment(distance, -0.5);  // 0.5m right offset
     }
 }

@@ -4,14 +4,10 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -27,7 +23,7 @@ import swervelib.math.Matter;
 public final class Constants
 {
 
-  public static final double ROBOT_MASS = (95) * 0.453592; // 32lbs * kg per pound
+  public static final double ROBOT_MASS = (98.6) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
@@ -68,19 +64,8 @@ public final class Constants
     public static final double GROUND_INTAKE_DOWN_POSITION = 30.0;
   }
   public static class HubPose {
-    public static final Translation2d BLUE_Hub_CENTER = new Translation2d(Meters.of(4.5), Meters.of(4));
-    public static final Translation2d RED_Hub_CENTER = new Translation2d(Meters.of(13), Meters.of(4));
-    //positive = further way
-    public static final Translation2d FRONT_BACK_OFFSET = new Translation2d(Inches.of(46), Inches.of(0));
-    public static final Translation2d PATHFIND_OFFSET = new Translation2d(Meters.of(2).plus(Inches.of(13)), Inches.of(0));
-    //positive = further from the center
 
-    public static final Translation2d INITIAL_ALIGNMENT_OFFSET = new Translation2d(Meters.of(2).plus(Inches.of(3)), Meters.of(0));
-
-    public static final Translation2d centerOffset = new Translation2d(Inches.of(0), Inches.of(6.2));
-    public static final Translation2d leftRightOffset = new Translation2d(Inches.of(0), Inches.of(1.7));
-
-  }
+   }
   public static class OperatorConstants
   {
     // Joystick Deadband

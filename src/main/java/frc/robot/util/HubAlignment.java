@@ -1,47 +1,45 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+/**
+ * Represents a specific alignment configuration for the robot relative to the hub.
+ * Uses global pose estimation and trigonometry to calculate the target position.
+ * The robot will face the hub from the specified distance with optional lateral offset.
+ *
+ * @param distanceMeters Distance in meters from the hub center.
+ * @param sideOffsetMeters Lateral offset from the direct line to the hub center in meters.
+ *                         Positive = left side, Negative = right side (relative to facing the hub).
+ */
+public record HubAlignment(double distanceMeters, double sideOffsetMeters) {
 
-import static frc.robot.Constants.HubPose.*;
-
-public record HubAlignment(HubOrientation orientation, HubSide side) {
-
-    public Pose2d getAlignmentPose() {
-        return getAlignmentPose(FRONT_BACK_OFFSET);
-    }
-    public Pose2d getInitialPathfindPose() {
-        return getAlignmentPose(PATHFIND_OFFSET);
-    }
-    public Pose2d getInitalPose() {
-        return getAlignmentPose(INITIAL_ALIGNMENT_OFFSET);
-    }
-
-    private Pose2d getAlignmentPose(Translation2d forwardsBackwardsOffset) {
-        Translation2d HubPose = BLUE_Hub_CENTER.minus(forwardsBackwardsOffset).plus(centerOffset.times(side == HubSide.LEFT ? 1 : -1)).minus(leftRightOffset);
-        HubPose = HubPose.rotateAround(BLUE_Hub_CENTER, Rotation2d.fromDegrees(orientation.getHubRotation()));
-        return flipPose(new Pose2d(HubPose, Rotation2d.fromDegrees(orientation.getRobotRotation())));
+    /**
+     * Create a string representation of this alignment.
+     *
+     * @return Descriptive string.
+     */
+    @Override
+    public String toString() {
+        String sideDescription = sideOffsetMeters > 0 ? "left" : (sideOffsetMeters < 0 ? "right" : "center");
+        return String.format("HubAlignment{distance=%.2fm, side=%s, offset=%.2fm}",
+                distanceMeters, sideDescription, Math.abs(sideOffsetMeters));
     }
 
-    public Pose2d getCenterPose() {
-        Translation2d HubPose = BLUE_Hub_CENTER.minus(new Translation2d(2, 0)).plus(centerOffset.times(side == HubSide.LEFT ? 1 : -1));
-        HubPose = HubPose.rotateAround(BLUE_Hub_CENTER, Rotation2d.fromDegrees(orientation.getHubRotation()));
-        return flipPose(new Pose2d(HubPose, Rotation2d.fromDegrees(orientation.getRobotRotation())));
+    /**
+     * Check if this is a centered approach (no lateral offset).
+     *
+     * @return True if side offset is approximately zero.
+     */
+    public boolean isCentered() {
+        return Math.abs(sideOffsetMeters) < 0.01;
     }
 
-    private Pose2d flipPose(Pose2d pose) {
-        if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue){
-            System.out.println("Not flipping");
-            return pose;
-        }
-        System.out.println("Flipping");
-        Translation2d center = BLUE_Hub_CENTER.interpolate(RED_Hub_CENTER, 0.5);
-        Translation2d poseTranslation = pose.getTranslation();
-        poseTranslation = poseTranslation.rotateAround(center, Rotation2d.k180deg);
-        return new Pose2d(poseTranslation, pose.getRotation().rotateBy(Rotation2d.k180deg));
+    /**
+     * Get a description of which side this approach is from.
+     *
+     * @return "left", "right", or "center".
+     */
+    public String getSideDescription() {
+        if (sideOffsetMeters > 0.1) return "left";
+        if (sideOffsetMeters < -0.1) return "right";
+        return "center";
     }
-
 }
