@@ -343,7 +343,7 @@ public class BadVision
   enum Cameras
   {
     /**
-     * Left Camera
+     * Right Camera
      */
     RIGHT("1672_Camera2",
              new Rotation3d(0, Math.toRadians(0), Math.toRadians(225)),
@@ -352,7 +352,7 @@ public class BadVision
                                Units.inchesToMeters(8.5)),
                                VecBuilder.fill(0,0,0), VecBuilder.fill(0,0,0)),
                                /**
-     * Right Camera
+     * Left Camera
      */
     LEFT("1672_Camera1",
               new Rotation3d(0, Math.toRadians(0), Math.toRadians(135)),

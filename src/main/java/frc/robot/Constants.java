@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
+
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -63,7 +67,20 @@ public final class Constants
   public static class IntakeDownPosition{
     public static final double GROUND_INTAKE_DOWN_POSITION = 30.0;
   }
+  public static class HubPose {
+    public static final Translation2d BLUE_Hub_CENTER = new Translation2d(Meters.of(4.5), Meters.of(4));
+    public static final Translation2d RED_Hub_CENTER = new Translation2d(Meters.of(13), Meters.of(4));
+    //positive = further way
+    public static final Translation2d FRONT_BACK_OFFSET = new Translation2d(Inches.of(46), Inches.of(0));
+    public static final Translation2d PATHFIND_OFFSET = new Translation2d(Meters.of(2).plus(Inches.of(13)), Inches.of(0));
+    //positive = further from the center
 
+    public static final Translation2d INITIAL_ALIGNMENT_OFFSET = new Translation2d(Meters.of(2).plus(Inches.of(3)), Meters.of(0));
+
+    public static final Translation2d centerOffset = new Translation2d(Inches.of(0), Inches.of(6.2));
+    public static final Translation2d leftRightOffset = new Translation2d(Inches.of(0), Inches.of(1.7));
+
+  }
   public static class OperatorConstants
   {
     // Joystick Deadband

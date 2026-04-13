@@ -5,13 +5,17 @@
 package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
@@ -23,6 +27,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,10 +36,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.BadVision.Cameras;
+import frc.robot.util.Hub;
+import frc.robot.util.HubAlignment;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
@@ -44,6 +52,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
@@ -215,6 +224,43 @@ public class SwerveSubsystem extends SubsystemBase
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
+  }
+ public Command alignToAndExtend(String side, Command extendCommand) {
+    HubAlignment alignment = Hub.fromSide(side);
+    Pose2d waypoint = alignment.getAlignmentPose();
+    swerveDrive.field.getObject("AlignPose").setPose(alignment.getAlignmentPose());
+    swerveDrive.field.getObject("InitialPose").setPose(alignment.getInitalPose());
+    swerveDrive.field.getObject("CenterPose").setPose(alignment.getCenterPose());
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        alignment.getInitalPose(),
+        waypoint);
+
+    PathConstraints constraints = new PathConstraints(
+        0.25, 1.5,
+        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(180));
+
+    PathPlannerPath path = new PathPlannerPath(
+        waypoints,
+        constraints,
+        new IdealStartingState(getVelocityMagnitude(swerveDrive.getFieldVelocity()), waypoint.getRotation()),
+        new GoalEndState(0.0, waypoint.getRotation()));
+    path.preventFlipping = true;
+    return driveToPose(alignment.getInitialPathfindPose()).andThen(
+        Commands.parallel(
+            extendCommand,
+            Commands.runOnce(this::pointModulesForward).andThen(
+                AutoBuilder.followPath(path).andThen(
+                    Commands.print("start position PID loop"),
+                    // PositionPIDCommand.generateCommand(this, waypoint, Seconds.of(0.4)),
+                    Commands.print("end position PID loop")))));
+  }
+  public void pointModulesForward() {
+    for (SwerveModule modules : swerveDrive.getModules()) {
+      modules.setAngle(0);
+    }
+  }
+  private LinearVelocity getVelocityMagnitude(ChassisSpeeds cs) {
+    return MetersPerSecond.of(new Translation2d(cs.vxMetersPerSecond, cs.vyMetersPerSecond).getNorm());
   }
 
   /**
