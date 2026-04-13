@@ -124,8 +124,8 @@ public class RobotContainer
     
     //Create the NamedCommands that will be used in PathPlanner
     NamedCommands.registerCommand("Intake-Fuel", intake.intake());
-    NamedCommands.registerCommand("Shoot-Trench", shooter.shootTrench());
-    NamedCommands.registerCommand("Shoot-Hub", shooter.shootHub());
+    // NamedCommands.registerCommand("Shoot-TrenchWall", shooter.shootTrenchWall());
+    // NamedCommands.registerCommand("Shoot-Hub", shooter.shootHub());
     NamedCommands.registerCommand("Shoot-Tower", shooter.shootTower());
     NamedCommands.registerCommand("Intake-Down", intake.intakeDown());
     NamedCommands.registerCommand("Intake-Home", intake.homeIntake());
@@ -211,11 +211,10 @@ public class RobotContainer
       driverPS5.cross().onTrue((intake.intakeDown()));
       
       
-      oppsPS5.L1().whileTrue(shooter.shootTrenchWall());
-      oppsPS5.R1().whileTrue(shooter.shootHub());
-      oppsPS5.L2().whileTrue(shooter.shootCorner());
+      oppsPS5.R1().whileTrue(shooter.shootTrenchWall());
+      oppsPS5.L2().whileTrue(shooter.rampUp());
+      oppsPS5.L1().whileTrue(shooter.shootCorner());
       oppsPS5.R2().whileTrue(shooter.shootTower());
-      oppsPS5.square().whileTrue(shooter.rampUp());
       
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));

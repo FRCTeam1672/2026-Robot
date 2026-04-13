@@ -76,17 +76,15 @@ public class Intake extends SubsystemBase {
   }
 
   public Command homeIntake() {
-    return Commands.waitUntil(this::isIntakeDown).andThen(
-    Commands.runOnce(() -> {
+    return Commands.runOnce(() -> {
       groundintakePosition = GROUND_INTAKE_HOME_POSITION;
-    }));
+    });
   }
 
   public Command intakeDown() {
-    return Commands.waitUntil(this::isIntakeHomed).andThen(
-    Commands.runOnce(() -> {
+    return Commands.runOnce(() -> {
       groundintakePosition = GROUND_INTAKE_DOWN_POSITION;
-    }));
+    });
   }
 
   // public Command intakeTo(double pos) {

@@ -68,7 +68,7 @@ public class Shooter extends SubsystemBase {
     return Commands.sequence(
           Commands.run(() -> {
             top.set(.75);
-            bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.21 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
@@ -76,35 +76,35 @@ public class Shooter extends SubsystemBase {
       .handleInterrupt(this::stopAll);
   }
 
-  public Command shootHub() {
-    return Commands.sequence(
-          Commands.run(() -> {
-            top.setVoltage(m_feedforward.calculate(0*5676));
-            bottom.setVoltage(m_feedforward.calculate(0.13 * 5676));
-            index.set(-1);
-            agitator.set(1);
-          }).withTimeout(ShootCycle.inTime)
-        ).repeatedly()
-      .handleInterrupt(this::stopAll);
-  }
+  // public Command shootHub() {
+  //   return Commands.sequence(
+  //         Commands.run(() -> {
+  //           top.setVoltage(m_feedforward.calculate(0*5676));
+  //           bottom.setVoltage(m_feedforward.calculate(0.13 * 5676));
+  //           index.set(-1);
+  //           agitator.set(1);
+  //         }).withTimeout(ShootCycle.inTime)
+  //       ).repeatedly()
+  //     .handleInterrupt(this::stopAll);
+  // }
 
-  public Command shootTrench() {
-    return Commands.sequence(
-          Commands.run(() -> {
-            top.set(.75);
-            bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
-            index.set(-1);
-            agitator.set(1);
-          }).withTimeout(ShootCycle.inTime)
-        ).repeatedly()
-      .handleInterrupt(this::stopAll);
-  }
+  // // public Command shootTrench() {
+  // //   return Commands.sequence(
+  //         Commands.run(() -> {
+  //           top.set(.75);
+  //           bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
+  //           index.set(-1);
+  //           agitator.set(1);
+  //         }).withTimeout(ShootCycle.inTime)
+  //       ).repeatedly()
+  //     .handleInterrupt(this::stopAll);
+  // }
 
   public Command shootTrenchWall() {
    return Commands.sequence(
           Commands.run(() -> {
             top.set(.75);
-            bottom.setVoltage(m_feedforward.calculate(0.15 * 5676));
+            bottom.setVoltage(m_feedforward.calculate(0.3 * 5676));
             index.set(-1);
             agitator.set(1);
           }).withTimeout(ShootCycle.inTime)
