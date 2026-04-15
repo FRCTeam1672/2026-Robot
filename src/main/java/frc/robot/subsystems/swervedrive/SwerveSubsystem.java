@@ -276,6 +276,27 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   /**
+   * Position the robot at a specific distance from the hub center, facing the hub.
+   * This command uses PathFinding to navigate to the calculated pose.
+   *
+   * @param distanceFromHub Distance in meters from the hub center (typically 1 meter for shooting).
+   * @return PathFinding command to navigate to the hub alignment pose
+   */
+  public Command driveToHubAlignmentPose(double distanceFromHub)
+  {
+    if (vision == null)
+    {
+      return Commands.none();
+    }
+    
+    // Get the target pose from the vision system
+    Pose2d targetPose = vision.getHubAlignmentPose(distanceFromHub, 0);
+    
+    // Use driveToPose to navigate there
+    return driveToPose(targetPose);
+  }
+
+  /**
    * Align the robot to face the hub at a specific distance using global pose estimation.
    * The robot calculates the angle to the hub center based on its current position on the field,
    * then positions itself at the desired distance from the hub while facing it.
@@ -285,13 +306,8 @@ public class SwerveSubsystem extends SubsystemBase
    *                   Positive = left side, Negative = right side (relative to facing the hub).
    * @return PathFinding command to navigate to the calculated pose.
    */
-  public Command alignToHub(double distanceFromHub, double sideOffset)
-  {
-    Pose2d targetPose = vision.getHubAlignmentPose(distanceFromHub, sideOffset);
-    return driveToPose(targetPose);
-  }
-
-  /**
+  
+   /**
    * Drive with {@link SwerveSetpointGenerator} from 254, implemented by PathPlanner.
    *
    * @param robotRelativeChassisSpeed Robot relative {@link ChassisSpeeds} to achieve.
@@ -739,5 +755,15 @@ public class SwerveSubsystem extends SubsystemBase
   public SwerveDrive getSwerveDrive()
   {
     return swerveDrive;
+  }
+
+  /**
+   * Gets the BadVision object.
+   *
+   * @return {@link BadVision}
+   */
+  public BadVision getVision()
+  {
+    return vision;
   }
 }

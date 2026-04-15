@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShootCycle;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Shooter extends SubsystemBase {
   private final SparkMax top = new SparkMax(24, MotorType.kBrushless);
@@ -98,6 +99,48 @@ public class Shooter extends SubsystemBase {
           }).withTimeout(ShootCycle.inTime)
         ).repeatedly()
       .handleInterrupt(this::stopAll);
+  }
+
+  /**
+   * Position the robot at 1 meter from the hub facing it, then shoot.
+   * This command uses the swerve drive to navigate to the hub alignment pose.
+   *
+   * @param swerve The swerve subsystem to use for positioning
+   * @return Command that positions the robot and shoots
+   */
+  public Command shootTowerAtHub(SwerveSubsystem swerve) {
+    return Commands.sequence(
+      swerve.driveToHubAlignmentPose(1.0),  // Drive to 1 meter from hub facing it
+      shootTower()  // Then shoot
+    );
+  }
+
+  /**
+   * Position the robot at 15 meters from the hub facing it, then shoot for trench.
+   * This command uses the swerve drive to navigate to the hub alignment pose.
+   *
+   * @param swerve The swerve subsystem to use for positioning
+   * @return Command that positions the robot and shoots
+   */
+  public Command shootTrenchAtHub(SwerveSubsystem swerve) {
+    return Commands.sequence(
+      swerve.driveToHubAlignmentPose(15.0),  // Drive to 15 meters from hub facing it
+      shootTrench()  // Then shoot
+    );
+  }
+
+  /**
+   * Position the robot at 2 meters from the hub facing it, then shoot for corner.
+   * This command uses the swerve drive to navigate to the hub alignment pose.
+   *
+   * @param swerve The swerve subsystem to use for positioning
+   * @return Command that positions the robot and shoots
+   */
+  public Command shootCornerAtHub(SwerveSubsystem swerve) {
+    return Commands.sequence(
+      swerve.driveToHubAlignmentPose(2.0),  // Drive to 2 meters from hub facing it
+      shootCorner()  // Then shoot
+    );
   }
 
   public void stopAll() {

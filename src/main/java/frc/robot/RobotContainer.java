@@ -211,9 +211,9 @@ public class RobotContainer
       driverPS5.cross().onTrue((intake.intakeDown()));
 
 
-      oppsPS5.L1().onTrue((shooter.shootTower()));
-      oppsPS5.L2().onTrue((shooter.shootTrench()));
-      oppsPS5.R1().onTrue((shooter.shootCorner()));
+      oppsPS5.L1().onTrue((shooter.shootTowerAtHub(drivebase)));
+      oppsPS5.L2().onTrue((shooter.shootTrenchAtHub(drivebase)));
+      oppsPS5.R1().onTrue((shooter.shootCornerAtHub(drivebase)));
       oppsPS5.R2().onTrue((shooter.shootPassing()));
       oppsPS5.triangle().onTrue((intake.homeIntake()));
       oppsPS5.cross().onTrue((intake.intakeDown()));
