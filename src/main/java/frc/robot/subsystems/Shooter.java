@@ -109,8 +109,8 @@ public class Shooter extends SubsystemBase {
    * @return Command that positions the robot and shoots
    */
   public Command shootTowerAtHub(SwerveSubsystem swerve) {
-    return Commands.sequence(
-      swerve.driveToHubAlignmentPose(1.0),  // Drive to 1 meter from hub facing it
+    return Commands.parallel(
+      swerve.driveToHubAlignmentPose(1.0).repeatedly(),  // Drive to 1 meter from hub facing it
       shootTower()  // Then shoot
     );
   }
@@ -122,12 +122,12 @@ public class Shooter extends SubsystemBase {
    * @param swerve The swerve subsystem to use for positioning
    * @return Command that positions the robot and shoots
    */
-  public Command shootTrenchAtHub(SwerveSubsystem swerve) {
-    return Commands.sequence(
-      swerve.driveToHubAlignmentPose(15.0),  // Drive to 15 meters from hub facing it
-      shootTrench()  // Then shoot
-    );
-  }
+public Command shootTrenchAtHub(SwerveSubsystem swerve) {
+  return Commands.parallel(
+    swerve.driveToHubAlignmentPose(1.0).repeatedly(),  // Continuously realign with hub
+    shootTrench()  // Shoot while aligning
+  );
+}
 
   /**
    * Position the robot at 2 meters from the hub facing it, then shoot for corner.
@@ -137,8 +137,8 @@ public class Shooter extends SubsystemBase {
    * @return Command that positions the robot and shoots
    */
   public Command shootCornerAtHub(SwerveSubsystem swerve) {
-    return Commands.sequence(
-      swerve.driveToHubAlignmentPose(2.0),  // Drive to 2 meters from hub facing it
+    return Commands.parallel(
+      swerve.driveToHubAlignmentPose(2.0).repeatedly(),  // Drive to 2 meters from hub facing it
       shootCorner()  // Then shoot
     );
   }
